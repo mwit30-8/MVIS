@@ -1,0 +1,18 @@
+FROM node:16
+
+ENV NODE_ENV development
+
+WORKDIR /app
+COPY ./package.json ./yarn.lock /app/
+# RUN yarn install --immutable --immutable-cache --check-cache
+
+COPY ./backend/package.json /app/backend/
+RUN yarn workspace mvis-backend install
+# --immutable --immutable-cache --check-cache
+
+ARG NODE_ENV=production
+ENV NODE_ENV ${NODE_ENV}
+
+COPY ./backend/ /app/backend/
+
+CMD yarn workspace mvis-backend run build

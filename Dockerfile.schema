@@ -1,0 +1,12 @@
+FROM ubuntu:latest
+
+RUN apt-get update -y
+RUN apt-get install -y curl
+
+WORKDIR /app
+COPY ./backend/setup.sh /app/
+COPY ./backend/schema.graphql /app/
+
+ARG MVIS_BACKEND_ADDRESS=http://dgraph:8080
+
+CMD bash ./setup.sh ${MVIS_BACKEND_ADDRESS} /app/schema.graphql

@@ -1,0 +1,7 @@
+{
+	"recommendations": [
+		"ms-azuretools.vscode-docker",
+		"cschleiden.vscode-github-actions",
+		"streetsidesoftware.code-spell-checker"
+	]
+}

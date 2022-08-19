@@ -1,0 +1,84 @@
+version: '3.7'
+
+services:
+  dgraph:
+    image: dgraph/standalone:v21.03.2
+    container_name: dgraph
+    environment:
+      DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker"
+    ports:
+      - '8080:8080'
+      - '8000:8000'
+    volumes:
+      - dgraph_data:/dgraph:rw
+    healthcheck:
+      test: curl http://dgraph:8080/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  build_schema:
+    container_name: build_schema
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.schema
+      args:
+        MVIS_BACKEND_ADDRESS: http://dgraph:8080
+    depends_on:
+      dgraph:
+        condition: service_healthy
+    volumes:
+      - ./backend/schema.graphql:/app/schema.graphql:ro
+      - ./backend/setup.sh:/app/setup.sh:ro
+
+  build_lambda:
+    container_name: build_lambda
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.lambda
+      args:
+        NODE_ENV: development
+    volumes:
+      - ./package.json:/app/package.json:ro
+      - ./yarn.lock:/app/yarn.lock:ro
+      - ./backend/package.json:/app/backend/package.json:ro
+      - ./backend/tsconfig.json:/app/backend/tsconfig.json:ro
+      - ./backend/webpack.config.json:/app/backend/webpack.config.json:ro
+      - ./backend/src:/app/backend/src:ro
+      - lambda_script:/app/backend/dist:rw
+    command: yarn workspace mvis-backend run watch
+
+  dgraph_lambda:
+    image: dgraph/dgraph-lambda:latest
+    container_name: dgraph_lambda
+    depends_on:
+      - dgraph
+      - build_lambda
+    environment:
+      DGRAPH_URL: http://dgraph:8080
+    volumes:
+      - lambda_script:/app/script:ro
+
+  frontend:
+    container_name: mvis
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.frontend
+      args:
+        MVIS_BACKEND_ADDRESS: http://dgraph:8080
+        NODE_ENV: development
+    environment:
+      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
+      CHOKIDAR_USEPOLLING: 'true'
+    ports:
+      - '19006:19006'
+    volumes:
+      - ./package.json:/app/package.json:ro
+      - ./yarn.lock:/app/yarn.lock:ro
+      - ./frontend:/app/frontend:ro
+    command: yarn workspace mvis-frontend run start
+
+volumes:
+  dgraph_data: {}
+  lambda_script: {}

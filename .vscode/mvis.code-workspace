@@ -1,0 +1,34 @@
+{
+    "folders": [
+        {
+            "name": "ROOT",
+            "path": "../"
+        },
+        {
+            "name": "frontend",
+            "path": "../frontend"
+        },
+        {
+            "name": "backend",
+            "path": "../backend"
+        },
+    ],
+    "settings": {
+        "cSpell.words": [
+            "Autobuild",
+            "buildscript",
+            "codeql",
+            "Mahidol",
+            "MVIS",
+            "MWIT",
+            "Wittayanusorn"
+        ],
+        "cSpell.ignorePaths": [
+            "yarn.lock",
+            "node_modules",
+            "vscode-extension",
+            ".git/objects",
+            ".vscode"
+        ]
+    }
+}

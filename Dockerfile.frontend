@@ -1,0 +1,21 @@
+FROM node:16
+
+ENV NODE_ENV development
+
+WORKDIR /app
+COPY ./package.json ./yarn.lock /app/
+# RUN yarn install --immutable --immutable-cache --check-cache
+
+COPY ./frontend/package.json /app/frontend/
+RUN yarn workspace mvis-frontend install
+# --immutable --immutable-cache --check-cache
+
+ARG NODE_ENV=production
+ENV NODE_ENV ${NODE_ENV}
+
+COPY ./frontend/ /app/frontend/
+
+ARG MVIS_BACKEND_ADDRESS=http://dgraph:8080
+ENV MVIS_BACKEND_ADDRESS ${MVIS_BACKEND_ADDRESS}
+
+CMD yarn workspace mvis-frontend run start

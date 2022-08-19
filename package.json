@@ -1,0 +1,20 @@
+{
+  "name": "mvis",
+  "version": "0.0.0",
+  "private": "true",
+  "description": "MWIT Very Intelligent System",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwit30-8/MVIS.git"
+  },
+  "author": "MWIT30.8",
+  "license": "MITNFA",
+  "bugs": {
+    "url": "https://github.com/mwit30-8/MVIS/issues"
+  },
+  "homepage": "MWIT30-8.github.io/MVIS",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}

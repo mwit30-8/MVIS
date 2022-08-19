@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "bycedric.vscode-expo",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "dbaeumer.vscode-eslint"
+    ]
+}
