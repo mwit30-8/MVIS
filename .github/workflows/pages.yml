@@ -43,7 +43,7 @@ jobs:
             -t mvis-frontend -f ./Dockerfile.frontend .
       - name: Build Github Pages
         run: |
-          docker run -it --name mvis \
+          docker run --name mvis \
             -v ./web-build:/app/frontend/web-build \
             mvis-frontend \
             yarn workspace mvis-frontend run export:web
