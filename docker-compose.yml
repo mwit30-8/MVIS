@@ -6,9 +6,8 @@ services:
     container_name: dgraph
     environment:
       DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker"
-    ports:
-      - '8080:8080'
-      - '8000:8000'
+    # ports:
+    #   - '8080:8080'
     volumes:
       - dgraph_data:/dgraph:rw
     healthcheck:
@@ -24,7 +23,7 @@ services:
       context: ./
       dockerfile: ./Dockerfile.schema
       args:
-        MVIS_BACKEND_ADDRESS: http://dgraph:8080
+        DEPLOYMENT_URL: http://dgraph:8080
     depends_on:
       dgraph:
         condition: service_healthy
@@ -44,7 +43,7 @@ services:
       - ./yarn.lock:/app/yarn.lock:ro
       - ./backend/package.json:/app/backend/package.json:ro
       - ./backend/tsconfig.json:/app/backend/tsconfig.json:ro
-      - ./backend/webpack.config.json:/app/backend/webpack.config.json:ro
+      - ./backend/webpack.config.js:/app/backend/webpack.config.js:ro
       - ./backend/src:/app/backend/src:ro
       - lambda_script:/app/backend/dist:rw
     command: yarn workspace mvis-backend run watch
@@ -66,18 +65,25 @@ services:
       context: ./
       dockerfile: ./Dockerfile.frontend
       args:
-        MVIS_BACKEND_ADDRESS: http://dgraph:8080
         NODE_ENV: development
+        DEPLOYMENT_URL: http://dgraph:8080
     environment:
       EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
       CHOKIDAR_USEPOLLING: 'true'
     ports:
-      - '19006:19006'
+      - '19006:19006' # Web
     volumes:
       - ./package.json:/app/package.json:ro
       - ./yarn.lock:/app/yarn.lock:ro
-      - ./frontend:/app/frontend:ro
-    command: yarn workspace mvis-frontend run start
+      - ./frontend/package.json:/app/frontend/package.json:ro
+      - ./frontend/app.json:/app/frontend/app.json:ro
+      - ./frontend/babel.config.js:/app/frontend/babel.config.js:ro
+      - ./frontend/tsconfig.json:/app/frontend/tsconfig.json:ro
+      - ./frontend/index.ts:/app/frontend/index.ts:ro
+      - ./frontend/.expo-shared:/app/frontend/.expo-shared:rw
+      - ./frontend/assets:/app/frontend/assets:ro
+      - ./frontend/src:/app/frontend/src:ro
+    command: yarn workspace mvis-frontend run dev:web
 
 volumes:
   dgraph_data: {}

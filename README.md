@@ -30,7 +30,7 @@ This project is part of the course in Mahidol Wittayanusorn School.
    docker-compose build
    ```
 
-3. Run the software at port 19006
+3. Run the software at <http://localhost:19006>
 
    ```sh
    docker-compose up

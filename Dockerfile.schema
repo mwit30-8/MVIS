@@ -7,6 +7,7 @@ WORKDIR /app
 COPY ./backend/setup.sh /app/
 COPY ./backend/schema.graphql /app/
 
-ARG MVIS_BACKEND_ADDRESS=http://dgraph:8080
+ARG DEPLOYMENT_URL=http://dgraph:8080
+ENV DEPLOYMENT_URL ${DEPLOYMENT_URL}
 
-CMD bash ./setup.sh ${MVIS_BACKEND_ADDRESS} /app/schema.graphql
+CMD bash ./setup.sh
