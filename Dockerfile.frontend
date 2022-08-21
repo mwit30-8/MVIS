@@ -15,7 +15,7 @@ ENV NODE_ENV ${NODE_ENV}
 
 COPY ./frontend/ /app/frontend/
 
-ARG MVIS_BACKEND_ADDRESS=http://dgraph:8080
-ENV MVIS_BACKEND_ADDRESS ${MVIS_BACKEND_ADDRESS}
+ARG DEPLOYMENT_URL=http://dgraph:8080
+ENV DEPLOYMENT_URL ${DEPLOYMENT_URL}
 
 CMD yarn workspace mvis-frontend run start
