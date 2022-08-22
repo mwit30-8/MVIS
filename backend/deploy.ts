@@ -140,7 +140,6 @@ async function main(): Promise<void> {
     const cerebro_jwt = process.env.CEREBRO_JWT ?? await getCerebroJWT(process.env.CEREBRO_EMAIL ?? '', process.env.CEREBRO_PASSWORD ?? '');
     const cerebro_client = await getCerebroClient(cerebro_jwt);
     const backend_info = await getBackendInfo(cerebro_client, process.env.DEPLOYMENT_NAME ?? '');
-    console.log(`::set-output name=BACKEND_URL::${backend_info.url}`)
     const deployment_client = await getDeploymentClient(backend_info);
     await updateSchema(deployment_client, './schema.graphql').then((response) => console.log(response));
     await updateLambda(cerebro_client, backend_info).then((response) => console.log(response));
