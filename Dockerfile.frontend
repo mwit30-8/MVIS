@@ -15,7 +15,7 @@ ENV NODE_ENV ${NODE_ENV}
 
 COPY ./frontend/ /app/frontend/
 
-ARG BACKEND_URL=http://dgraph:8080
+ARG BACKEND_URL=http://localhost:8080/graphql
 ENV BACKEND_URL ${BACKEND_URL}
 
 CMD yarn workspace mvis-frontend run start
