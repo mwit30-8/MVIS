@@ -6,6 +6,7 @@ export const createBackendClient = () => {
         uri: BACKEND_URL,
         fetchOptions: {
           method: 'GET',
+          mode: 'no-cors',
         },
     });
     return new ApolloClient({
