@@ -1,9 +1,12 @@
 import { BACKEND_URL } from './config';
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 export const createBackendClient = () => {
-    const httpLink = createHttpLink({
-        uri: BACKEND_URL
+    const httpLink = new HttpLink({
+        uri: BACKEND_URL,
+        fetchOptions: {
+          method: 'GET',
+        },
     });
     return new ApolloClient({
         link: httpLink,
