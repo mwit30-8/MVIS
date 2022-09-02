@@ -1,1 +1,1 @@
-export const BACKEND_URL = `${process.env.BACKEND_URL}/graphql`;
+export const BACKEND_URL = process.env.BACKEND_URL;
