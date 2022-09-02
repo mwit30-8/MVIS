@@ -105,7 +105,7 @@ function updateLambda(cerebro_client: typeof GraphQLClient.prototype, backend_in
         const { createFsFromVolume, Volume } = require('memfs') as typeof import('memfs');
         const webpack = require('webpack') as typeof import('webpack');
         const { encode } = require('base-64') as typeof import('base-64');
-        const config = (require('./webpack.config') as typeof import('./webpack.config'))(True);
+        const config = (require('./webpack.config') as typeof import('./webpack.config'))(true);
         const fs = createFsFromVolume(new Volume());
         const compiler = webpack(config);
         const UPDATE_LAMBDA = gql`
