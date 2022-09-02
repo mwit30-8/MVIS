@@ -9,9 +9,9 @@
     "@webpack-cli/generators": "^2.5.0",
     "base-64": "^1.0.0",
     "dotenv": "^16.0.2",
+    "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
     "memfs": "^3.4.7",
-    "node-fetch": "^3.2.10",
     "prettier": "^2.7.1",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
@@ -22,8 +22,9 @@
     "yarn-run-all": "^3.1.1"
   },
   "scripts": {
-    "deploy": "ts-node ./deploy.ts",
-    "build": "webpack",
-    "watch": "watch \"run-p build\" \"./src\""
+    "deploy": "ts-node ./src/deploy/server.ts",
+    "build": "ts-node ./src/deploy/local.ts",
+    "deploy:watch": "watch \"run-p build\" \"./src\"",
+    "build:watch": "watch \"run-p build\" \"./src\""
   }
 }

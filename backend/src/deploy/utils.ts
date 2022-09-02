@@ -73,15 +73,28 @@ function getBackendInfo(cerebro_client: typeof GraphQLClient.prototype, name: st
         resolver(backend_info);
     })
 }
-function getDeploymentClient(backend_info: BackendInfo): Promise<typeof GraphQLClient.prototype> {
+function getDeploymentClient(backend_url: string, jwtToken?: string): Promise<typeof GraphQLClient.prototype> {
     return new Promise((resolver) => {
-        const deployment_client = new GraphQLClient(`https://${backend_info.url}/admin`);
-        resolver(deployment_client.setHeader('X-Auth-Token', backend_info.jwtToken));
+        const deployment_client = new GraphQLClient(`${backend_url}/admin`);
+        if (jwtToken)
+            deployment_client.setHeader('X-Auth-Token', jwtToken);
+        resolver(deployment_client);
     });
 }
-function updateSchema(deployment_client: typeof GraphQLClient.prototype, schema_path: string): Promise<any> {
+function buildSchema(schema_path: string): Promise<string> {
     return new Promise((resolver, reject) => {
-        const schema = fs.readFileSync(schema_path).toString();
+        (require('dotenv') as typeof import('dotenv')).config()
+        const schema = `
+${fs.readFileSync(schema_path).toString()}
+
+# Dgraph.Authorization {"VerificationKey":"${JSON.stringify(process.env.AUTH0_PUBLIC_KEY).slice(1, -1)}","Header":"X-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","Algo":"RS256","Audience":["${process.env.AUTH0_CLIENT_ID}"]}
+
+`;
+        resolver(schema);
+    });
+}
+function updateSchema(deployment_client: typeof GraphQLClient.prototype, schema: string): Promise<any> {
+    return new Promise((resolver, reject) => {
         const UPDATE_SCHEMA = gql`
             mutation($schema: String!) {
                 updateGQLSchema(input: { set: { schema: $schema } }) {
@@ -99,13 +112,27 @@ function updateSchema(deployment_client: typeof GraphQLClient.prototype, schema_
             .catch(error => rejectGraphQLError(error, reject));
     });
 }
-function updateLambda(cerebro_client: typeof GraphQLClient.prototype, backend_info: BackendInfo): Promise<any> {
+function buildLambda(): Promise<void> {
+    return new Promise((resolver, reject) => {
+        const webpack = require('webpack') as typeof import('webpack');
+        const config = (require('../../webpack.config') as typeof import('../../webpack.config'))(true);
+        const compiler = webpack(config);
+        compiler.run((err) => {
+            if (err) reject(err);
+            compiler.close((closeErr) => {
+                if (closeErr) reject(closeErr);
+                resolver()
+            });
+        });
+    });
+}
+function updateLambda(cerebro_client: typeof GraphQLClient.prototype, backend_uid: string): Promise<any> {
     return new Promise((resolver, reject) => {
         const path = require('path') as typeof import('path');
         const { createFsFromVolume, Volume } = require('memfs') as typeof import('memfs');
         const webpack = require('webpack') as typeof import('webpack');
         const { encode } = require('base-64') as typeof import('base-64');
-        const config = (require('./webpack.config') as typeof import('./webpack.config'))(true);
+        const config = (require('../../webpack.config') as typeof import('../../webpack.config'))(true);
         const fs = createFsFromVolume(new Volume());
         const compiler = webpack(config);
         const UPDATE_LAMBDA = gql`
@@ -115,12 +142,12 @@ function updateLambda(cerebro_client: typeof GraphQLClient.prototype, backend_in
         `;
         compiler.outputFileSystem = fs;
         compiler.run((err) => {
-            if (err) throw err;
+            if (err) reject(err);
             const content = fs.readFileSync((path.posix ?? path).join(config.output.path, config.output.filename)).toString();
             const encoded = encode(content);
             const VARIABLE = {
                 input: {
-                    deploymentID: backend_info.uid,
+                    deploymentID: backend_uid,
                     tenantID: 0,
                     lambdaScript: encoded,
                 }
@@ -129,20 +156,19 @@ function updateLambda(cerebro_client: typeof GraphQLClient.prototype, backend_in
                 .then(response => resolver(response))
                 .catch(error => rejectGraphQLError(error, reject));
             compiler.close((closeErr) => {
-                if (closeErr) throw closeErr;
+                if (closeErr) reject(closeErr);
             });
         });
     });
 }
 
-async function main(): Promise<void> {
-    (require('dotenv') as typeof import('dotenv')).config()
-    const cerebro_jwt = process.env.CEREBRO_JWT ?? await getCerebroJWT(process.env.CEREBRO_EMAIL ?? '', process.env.CEREBRO_PASSWORD ?? '');
-    const cerebro_client = await getCerebroClient(cerebro_jwt);
-    const backend_info = await getBackendInfo(cerebro_client, process.env.DEPLOYMENT_NAME ?? '');
-    const deployment_client = await getDeploymentClient(backend_info);
-    await updateSchema(deployment_client, './schema.graphql').then((response) => console.log(response));
-    await updateLambda(cerebro_client, backend_info).then((response) => console.log(response));
-}
-
-main();
+module.exports = {
+    getCerebroJWT,
+    getCerebroClient,
+    getBackendInfo,
+    getDeploymentClient,
+    buildSchema,
+    updateSchema,
+    buildLambda,
+    updateLambda
+};
