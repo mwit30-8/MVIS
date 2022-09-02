@@ -67,27 +67,18 @@ services:
       retries: 3
       start_period: 15s
 
-  build_schema:
-    container_name: build_schema
+  build_backend:
+    container_name: build_backend
     build:
       context: ./
-      dockerfile: ./Dockerfile.schema
+      dockerfile: ./Dockerfile.backend
       args:
-        DEPLOYMENT_URL: http://dgraph:8080/admin/schema # dgraph alpha admin endpoint
+        NODE_ENV: development
+    environment:
+      BACKEND_URL: http://dgraph:8080
     depends_on:
       dgraph:
         condition: service_healthy
-    volumes:
-      - ./backend/schema.graphql:/app/schema.graphql:ro
-      - ./backend/setup.sh:/app/setup.sh:ro
-
-  build_lambda:
-    container_name: build_lambda
-    build:
-      context: ./
-      dockerfile: ./Dockerfile.lambda
-      args:
-        NODE_ENV: development
     volumes:
       - ./package.json:/app/package.json:ro
       - ./yarn.lock:/app/yarn.lock:ro
@@ -96,7 +87,7 @@ services:
       - ./backend/webpack.config.js:/app/backend/webpack.config.js:ro
       - ./backend/src:/app/backend/src:ro
       - lambda_script:/app/backend/dist:rw
-    command: yarn workspace mvis-backend run watch
+    command: yarn workspace mvis-backend run build:watch
 
   dgraph_lambda:
     image: dgraph/dgraph-lambda:latest
@@ -104,8 +95,6 @@ services:
     depends_on:
       dgraph:
         condition: service_healthy
-      build_lambda:
-        condition: service_started
     ports:
       - '8686:8686'
     environment:
