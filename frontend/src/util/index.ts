@@ -5,8 +5,7 @@ export const createBackendClient = () => {
     const httpLink = new HttpLink({
         uri: BACKEND_URL,
         fetchOptions: {
-          method: 'GET',
-          mode: 'no-cors',
+            method: 'GET',
         },
     });
     return new ApolloClient({
