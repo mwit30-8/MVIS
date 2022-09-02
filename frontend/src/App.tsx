@@ -6,8 +6,11 @@ import { ApolloProvider, gql, useQuery } from '@apollo/client';
 
 const DisplayBackendVersion: FC = () => {
   const { loading, error, data } = useQuery(gql`query Version{version}`);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (loading) return <Text>Loading...</Text>;
+  if (error) {
+    console.error(error);
+    return <Text>Error :(</Text>;
+  }
 
   return (
     <Text>
