@@ -50,6 +50,9 @@ jobs:
     needs:
       - paths-filter
     if: github.ref == 'refs/heads/main' && needs.paths-filter.outputs.backend == 'true'
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -65,14 +68,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
-        run: yarn workspace mvis-backend install
+        run: yarn install
       - name: Deploy to Dgraph Cloud
         env:
           CEREBRO_JWT: ${{ secrets.CEREBRO_JWT }}
           DEPLOYMENT_NAME: ${{ secrets.BACKEND_NAME }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
-        run: yarn workspace mvis-backend run deploy
+        run: yarn run deploy
 
   # Build job
   build-frontend:
@@ -80,6 +83,9 @@ jobs:
     needs:
       - paths-filter
     if: needs.paths-filter.outputs.frontend == 'true'
+    defaults:
+      run:
+        working-directory: ./frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -95,7 +101,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
-        run: yarn workspace mvis-frontend install
+        run: yarn install
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Build GitHub Pages
@@ -104,11 +110,11 @@ jobs:
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_URL: ${{ secrets.AUTH0_URL }}
-        run: yarn workspace mvis-frontend run export:web
+        run: yarn run export:web
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "./frontend/web-build"
+          path: "./web-build"
 
   # Deployment job
   deploy-frontend:
