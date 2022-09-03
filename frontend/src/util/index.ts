@@ -3,7 +3,6 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import * as config from './config';
 
 export const createBackendClient = (token?: string) => {
-    console.log(config.BACKEND_URL)
     const httpLink = new HttpLink({
         uri: config.BACKEND_URL,
         headers: {

@@ -1,5 +1,4 @@
 async function main(): Promise<void> {
-    (require('dotenv') as typeof import('dotenv')).config();
     const utils = require('./utils');
     const BACKEND_URL = process.env.BACKEND_URL ?? '';
     const deployment_client = await utils.getDeploymentClient(BACKEND_URL);

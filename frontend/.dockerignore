@@ -8,7 +8,7 @@ Dockerfile*
 .gitattributes
 .gitignore
 .github/
-# node
+
 # Node
 logs
 *.log
@@ -18,9 +18,6 @@ yarn-error.log*
 
 ## Dependency directories
 node_modules/
-
-# Lambda
-dist/
 
 # expo
 .expo/

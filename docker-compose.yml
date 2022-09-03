@@ -67,28 +67,6 @@ services:
       retries: 3
       start_period: 15s
 
-  build_backend:
-    container_name: build_backend
-    build:
-      context: ./
-      dockerfile: ./Dockerfile.backend
-      args:
-        NODE_ENV: development
-    environment:
-      BACKEND_URL: http://dgraph:8080
-    depends_on:
-      dgraph:
-        condition: service_healthy
-    volumes:
-      - ./package.json:/app/package.json:ro
-      - ./yarn.lock:/app/yarn.lock:ro
-      - ./backend/package.json:/app/backend/package.json:ro
-      - ./backend/tsconfig.json:/app/backend/tsconfig.json:ro
-      - ./backend/webpack.config.js:/app/backend/webpack.config.js:ro
-      - ./backend/src:/app/backend/src:ro
-      - lambda_script:/app/backend/dist:rw
-    command: yarn workspace mvis-backend run build:watch
-
   dgraph_lambda:
     image: dgraph/dgraph-lambda:latest
     container_name: dgraph_lambda
@@ -103,35 +81,58 @@ services:
       - lambda_script:/app/script:ro
     restart: on-failure
 
+  build_backend:
+    container_name: build_backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.backend
+      args:
+        NODE_ENV: development
+    environment:
+      BACKEND_URL: http://dgraph:8080
+      AUTH0_PUBLIC_KEY: ${AUTH0_PUBLIC_KEY}
+      AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
+    depends_on:
+      dgraph:
+        condition: service_healthy
+    volumes:
+      - ./backend/package.json:/app/package.json:ro
+      - ./backend/tsconfig.json:/app/tsconfig.json:ro
+      - ./backend/webpack.config.js:/app/webpack.config.js:ro
+      - ./backend/src:/app/src:ro
+      - lambda_script:/app/dist:rw
+    command: yarn run build:watch
+
   frontend:
     container_name: mvis
     build:
-      context: ./
+      context: ./frontend
       dockerfile: ./Dockerfile.frontend
       args:
         NODE_ENV: development
-        BACKEND_URL: http://localhost:8080/graphql # dgraph alpha client-side URL endpoint
     environment:
       EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
       CHOKIDAR_USEPOLLING: 'true'
+      # REACT_NATIVE_PACKAGER_HOSTNAME: 127.0.0.1 # Frontend host client-side IP address
+      BACKEND_URL: http://localhost:8080/graphql # dgraph alpha client-side URL endpoint
+      AUTH0_URL: ${AUTH0_URL}
+      AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
     ports:
       - '19000:19000'
       - '19001:19001'
       - '19002:19002'
       - '19006:19006'
     volumes:
-      - ./package.json:/app/package.json:ro
-      - ./yarn.lock:/app/yarn.lock:ro
-      - ./frontend/package.json:/app/frontend/package.json:ro
-      - ./frontend/app.json:/app/frontend/app.json:ro
-      - ./frontend/babel.config.js:/app/frontend/babel.config.js:ro
-      - ./frontend/tsconfig.json:/app/frontend/tsconfig.json:ro
-      - ./frontend/index.ts:/app/frontend/index.ts:ro
-      - ./frontend/.expo-shared:/app/frontend/.expo-shared:rw
-      - ./frontend/assets:/app/frontend/assets:ro
-      - ./frontend/src:/app/frontend/src:ro
+      - ./frontend/package.json:/app/package.json:ro
+      - ./frontend/app.json:/app/app.json:ro
+      - ./frontend/babel.config.js:/app/babel.config.js:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./frontend/index.ts:/app/index.ts:ro
+      - ./frontend/.expo-shared:/app/.expo-shared:rw
+      - ./frontend/assets:/app/assets:ro
+      - ./frontend/src:/app/src:ro
     restart: on-failure
-    command: yarn workspace mvis-frontend run dev:web
+    command: yarn run dev:web
 
 volumes:
   # dgraph_zero: {}

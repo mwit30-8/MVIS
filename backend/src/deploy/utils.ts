@@ -83,7 +83,6 @@ function getDeploymentClient(backend_url: string, jwtToken?: string): Promise<ty
 }
 function buildSchema(schema_path: string): Promise<string> {
     return new Promise((resolver, reject) => {
-        (require('dotenv') as typeof import('dotenv')).config()
         const schema = `
 ${fs.readFileSync(schema_path).toString()}
 

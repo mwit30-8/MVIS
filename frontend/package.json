@@ -1,6 +1,17 @@
 {
   "name": "mvis-frontend",
   "version": "0.0.0",
+  "private": "true",
+  "description": "MWIT Very Intelligent System",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwit30-8/MVIS.git"
+  },
+  "author": "MWIT30.8",
+  "license": "MITNFA",
+  "bugs": {
+    "url": "https://github.com/mwit30-8/MVIS/issues"
+  },
   "homepage": "https://mwit30-8.github.io/MVIS/",
   "main": "index.ts",
   "scripts": {
@@ -32,7 +43,6 @@
     "@babel/core": "^7.18.13",
     "@types/react": "~18.0.18",
     "@types/react-native": "~0.69.6",
-    "babel-plugin-inline-dotenv": "^1.7.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "typescript": "~4.8.2"
   }

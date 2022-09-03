@@ -1,5 +1,4 @@
 async function main(): Promise<void> {
-    (require('dotenv') as typeof import('dotenv')).config();
     const utils = require('./utils');
     const cerebro_jwt = process.env.CEREBRO_JWT ?? await utils.getCerebroJWT(process.env.CEREBRO_EMAIL ?? '', process.env.CEREBRO_PASSWORD ?? '');
     const cerebro_client = await utils.getCerebroClient(cerebro_jwt);
