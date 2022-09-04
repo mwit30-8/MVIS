@@ -81,14 +81,14 @@ export function getDeploymentClient(backend_url: string, jwtToken?: string): Pro
         resolver(deployment_client);
     });
 }
-export function buildSchema(schema_path: string, args: { AUTH0_PUBLIC_KEY: string, AUTH0_CLIENT_ID: string }): Promise<string> {
+export function buildSchema(schema_path: string, args: { AUTH0_URL: string, AUTH0_CLIENT_ID: string }): Promise<string> {
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
         const schema = `
 ${schema_file.toString()}
 
-# Dgraph.Authorization {"VerificationKey":"${JSON.stringify(args.AUTH0_PUBLIC_KEY).slice(1, -1)}","Header":"X-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","Algo":"RS256","Audience":["${args.AUTH0_CLIENT_ID}"]}
+# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"${args.AUTH0_URL}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
 
 `;
         resolver(schema);
@@ -128,7 +128,7 @@ export function buildLambda(isProduction: boolean = false, fs?: IFs): Promise<st
                 compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
                     if (err) reject(err);
                     resolver(data?.toString() ?? '');
-                })
+                });
             });
         });
     });

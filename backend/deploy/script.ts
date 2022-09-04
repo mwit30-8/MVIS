@@ -8,7 +8,7 @@ export async function local(): Promise<void> {
     const deployment_client = await utils.getDeploymentClient(BACKEND_URL);
     const updateSchema = async () => {
         const schema = await utils.buildSchema(SCHEMA_PATH, {
-            AUTH0_PUBLIC_KEY: process.env.AUTH0_PUBLIC_KEY as string,
+            AUTH0_URL: process.env.AUTH0_URL as string,
             AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID as string,
         });
         await utils.updateSchema(deployment_client, schema);
@@ -30,13 +30,13 @@ export async function server(): Promise<void> {
     const deployment_client = await utils.getDeploymentClient(`https://${backend_info.url}`, backend_info.jwtToken);
     const updateSchema = async () => {
         const schema = await utils.buildSchema(SCHEMA_PATH, {
-            AUTH0_PUBLIC_KEY: process.env.AUTH0_PUBLIC_KEY as string,
+            AUTH0_URL: process.env.AUTH0_URL as string,
             AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID as string,
         });
-        await utils.updateSchema(deployment_client, schema);
+        await utils.updateSchema(deployment_client, schema).catch(err => console.error(err));
     }
     const updateLambda = async () => {
-        await utils.updateLambda(cerebro_client, backend_info.uid);
+        await utils.updateLambda(cerebro_client, backend_info.uid).catch(err => console.error(err));
     }
     updateSchema();
     updateLambda();
