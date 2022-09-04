@@ -15,12 +15,10 @@
   "main": "./dist/script.js",
   "devDependencies": {
     "@slash-graphql/lambda-types": "^1.4.0",
-    "@types/base-64": "^1.0.0",
     "@types/dotenv": "^8.2.0",
     "@types/jsrsasign": "^10.5.2",
     "@types/node": "^18.7.14",
     "@webpack-cli/generators": "^2.5.0",
-    "base-64": "^1.0.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
     "jose": "^4.9.2",
