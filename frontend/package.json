@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/mwit30-8/MVIS/issues"
   },
-  "homepage": "https://mwit30-8.github.io/",
+  "homepage": "https://mwit30-8.github.io/MVIS",
   "main": "index.ts",
   "scripts": {
     "start": "expo start --dev-client",
