@@ -1,6 +1,6 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-module.exports = (isProduction=(process.env.NODE_ENV == "production")) => {
+module.exports = (isProduction = (process.env.NODE_ENV == "production")) => {
   const path = require("path");
 
   const config = {
@@ -19,6 +19,9 @@ module.exports = (isProduction=(process.env.NODE_ENV == "production")) => {
           test: /\.(ts|tsx)$/i,
           loader: "ts-loader",
           exclude: ["/node_modules/"],
+          options: {
+            configFile: "tsconfig.lambda.json",
+          },
         },
         // {
         //   test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
