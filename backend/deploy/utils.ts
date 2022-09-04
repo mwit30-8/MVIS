@@ -123,9 +123,12 @@ export function buildLambda(isProduction: boolean = false, fs?: IFs): Promise<st
             compiler.outputFileSystem = fs;
         compiler.run((err) => {
             if (err) reject(err);
-            compiler.close((closeErr) => {
+            compiler.close(async (closeErr) => {
                 if (closeErr) reject(closeErr);
-                resolver(fs.readFileSync((path.posix ?? path).join(config.output.path, config.output.filename)).toString())
+                compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
+                    if (err) reject(err);
+                    resolver(data.toString());
+                })
             });
         });
     });
