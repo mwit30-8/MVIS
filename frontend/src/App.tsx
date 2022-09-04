@@ -10,7 +10,7 @@ import * as config from './util/config';
 WebBrowser.maybeCompleteAuthSession();
 
 const useProxy = Platform.select({ web: false, default: true });
-const redirectUri = AuthSession.makeRedirectUri({ useProxy });
+const redirectUri = AuthSession.makeRedirectUri({ useProxy, path: config.SERVED_PATH });
 
 console.log(`Redirect URL: ${redirectUri}`);
 
@@ -42,9 +42,9 @@ const Auth: FC<IAuthProp> = (props) => {
     } else if (result.type === "success") {
       // Retrieve the JWT token and decode it
       const jwtToken = result.params.id_token;
-      verifyJwt(jwtToken).then((decoded) => {
-        props.setJwt(jwtToken)
-        const { name } = decoded?.payload;
+      verifyJwt(jwtToken).then((payload) => {
+        props.setJwt(jwtToken);
+        const { name } = payload;
         setName(name as string);
       });
     } else {
@@ -95,16 +95,16 @@ const App: FC = () => {
   const [jwt, setJwt] = useState<string | null>(null);
   const apolloClient = useMemo(() => { return jwt ? createBackendClient(jwt) : createBackendClient() }, [jwt]);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <ApolloProvider client={apolloClient}>
-        <StrictMode>
+    <StrictMode>
+      <View style={styles.container}>
+        <Text>Open up App.tsx to start working on your app!</Text>
+        <ApolloProvider client={apolloClient}>
           <DisplayBackendVersion />
-        </StrictMode>
-      </ApolloProvider>
-      <StatusBar style="auto" />
-      <Auth setJwt={setJwt} />
-    </View>
+        </ApolloProvider>
+        <StatusBar style="auto" />
+        <Auth setJwt={setJwt} />
+      </View>
+    </StrictMode>
   );
 };
 
