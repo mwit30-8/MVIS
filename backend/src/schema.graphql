@@ -1,3 +1,4 @@
 type Query {
     version: String @lambda
+    name: String @lambda
 }

@@ -1,4 +1,5 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
+const webpack = require("webpack");
 
 module.exports = (isProduction = (process.env.NODE_ENV == "production")) => {
   const path = require("path");
@@ -12,6 +13,11 @@ module.exports = (isProduction = (process.env.NODE_ENV == "production")) => {
     plugins: [
       // Add your plugins here
       // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+      new webpack.DefinePlugin({
+        'process.env.AUTH0_URL': JSON.stringify(process.env.AUTH0_URL),
+        'process.env.AUTH0_CLIENT_ID': JSON.stringify(process.env.AUTH0_CLIENT_ID),
+        'process.env.AUTH0_PUBLIC_KEY': JSON.stringify(process.env.AUTH0_PUBLIC_KEY),
+      })
     ],
     module: {
       rules: [

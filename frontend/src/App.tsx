@@ -19,7 +19,7 @@ interface IAuthProp {
 }
 
 const Auth: FC<IAuthProp> = (props) => {
-  const [name, setName] = useState<string | null>(null);
+  const [isLogin, setLogin] = useState(false);
 
   const [request, result, promptAsync] = AuthSession.useAuthRequest(
     {
@@ -44,8 +44,7 @@ const Auth: FC<IAuthProp> = (props) => {
       const jwtToken = result.params.id_token;
       verifyJwt(jwtToken).then((payload) => {
         props.setJwt(jwtToken);
-        const { name } = payload;
-        setName(name as string);
+        setLogin(true);
       });
     } else {
       const alertTitle = "Authentication error";
@@ -60,10 +59,9 @@ const Auth: FC<IAuthProp> = (props) => {
 
   return (
     <>
-      {name ? (
+      {isLogin ? (
         <>
-          <Text >You are logged in, {name}!</Text>
-          <Button title="Log out" onPress={() => setName(null)} />
+          <Button title="Log out" onPress={() => { props.setJwt(null); setLogin(false); }} />
         </>
       ) : (
         <Button
@@ -91,6 +89,21 @@ const DisplayBackendVersion: FC = () => {
   );
 };
 
+const DisplayAuthUsername: FC = () => {
+  const { loading, error, data } = useQuery(gql`query Name{name}`);
+  if (loading) return <Text>Loading...</Text>;
+  if (error) {
+    console.error(error);
+    return <Text>Error :(</Text>;
+  }
+
+  return (
+    <Text>
+      You are logged in, {data.name}
+    </Text>
+  );
+};
+
 const App: FC = () => {
   const [jwt, setJwt] = useState<string | null>(null);
   const apolloClient = useMemo(() => { return jwt ? createBackendClient(jwt) : createBackendClient() }, [jwt]);
@@ -100,6 +113,7 @@ const App: FC = () => {
         <Text>Open up App.tsx to start working on your app!</Text>
         <ApolloProvider client={apolloClient}>
           <DisplayBackendVersion />
+          <DisplayAuthUsername />
         </ApolloProvider>
         <StatusBar style="auto" />
         <Auth setJwt={setJwt} />

@@ -33,7 +33,7 @@ This project is part of the course in Mahidol Wittayanusorn School.
 3. Run the software at <http://localhost:19006>
 
    ```sh
-   docker-compose up
+   docker-compose --profile=full up
    ```
 
 ## Contributing

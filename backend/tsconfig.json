@@ -6,5 +6,9 @@
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "node",
-  }
+  },
+  "files": [
+    "deploy/local.ts",
+    "deploy/server.ts"
+  ]
 }
