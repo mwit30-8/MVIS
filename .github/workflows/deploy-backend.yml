@@ -53,5 +53,5 @@ jobs:
           CEREBRO_JWT: ${{ secrets.CEREBRO_JWT }}
           DEPLOYMENT_NAME: ${{ secrets.BACKEND_NAME }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
+          AUTH0_URL: ${{ secrets.AUTH0_URL }}
         run: yarn run deploy
