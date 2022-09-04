@@ -1,1 +1,1 @@
-require('./script.mts').local();
+require('./script').local();

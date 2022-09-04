@@ -1,6 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
 import * as config from './config';
+import { Buffer } from "buffer"
 
 export const createBackendClient = (token?: string) => {
     const httpLink = new HttpLink({
@@ -15,8 +15,11 @@ export const createBackendClient = (token?: string) => {
     });
 }
 
-export const verifyJwt = (token: string) => {
+export const verifyJwt = async (token: string) => {
     const AUTH0_JWKS_URL = `${config.AUTH0_URL}/.well-known/jwks.json`;
-    const jwks = createRemoteJWKSet(new URL(AUTH0_JWKS_URL));
-    return jwtVerify(token, jwks)
+    console.warn('This will not verify whether the signature is valid. You should not use this for untrusted messages.')
+    const [header, payload] = token.split('.').map(part => Buffer.from(part.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString());
+    const jwtHeader = JSON.parse(header);
+    const jwtPayload = JSON.parse(payload);
+    return jwtPayload;
 }
