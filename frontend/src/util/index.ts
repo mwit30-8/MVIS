@@ -6,7 +6,7 @@ export const createBackendClient = (token?: string) => {
     const httpLink = new HttpLink({
         uri: config.BACKEND_URL,
         headers: {
-            "X-Auth-Token": token ? `Bearer ${token}` : "",
+            "X-MVIS-Auth-Token": token ? `Bearer ${token}` : "",
         },
     });
     return new ApolloClient({

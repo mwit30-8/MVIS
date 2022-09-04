@@ -98,9 +98,18 @@ const DisplayAuthUsername: FC = () => {
   }
 
   return (
-    <Text>
-      You are logged in, {data.name}
-    </Text>
+    <>
+      {
+        data.name ?
+          <Text>
+            You are logged in, {data.name}
+          </Text >
+          :
+          <Text>
+            You are not logged in.
+          </Text >
+      }
+    </>
   );
 };
 
@@ -112,8 +121,8 @@ const App: FC = () => {
       <View style={styles.container}>
         <Text>Open up App.tsx to start working on your app!</Text>
         <ApolloProvider client={apolloClient}>
-          <DisplayBackendVersion />
           <DisplayAuthUsername />
+          <DisplayBackendVersion />
         </ApolloProvider>
         <StatusBar style="auto" />
         <Auth setJwt={setJwt} />
