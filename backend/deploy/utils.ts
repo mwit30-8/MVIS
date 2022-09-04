@@ -127,7 +127,7 @@ export function buildLambda(isProduction: boolean = false, fs?: IFs): Promise<st
                 if (closeErr) reject(closeErr);
                 compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
                     if (err) reject(err);
-                    resolver(data.toString());
+                    resolver(data?.toString() ?? '');
                 })
             });
         });
@@ -138,7 +138,7 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
         const { createFsFromVolume, Volume } = await import('memfs');
         const fs = createFsFromVolume(new Volume());
         buildLambda(true, fs).then(async (content) => {
-            const { encode } = await import('base-64');
+            const encode = ((str: string) => Buffer.from(str).toString('base64'));
             const UPDATE_LAMBDA = gql`
                 mutation updateLambda($input: UpdateLambdaInput!){
                     updateLambda(input: $input)
