@@ -1,0 +1,131 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy Expo with GitHub Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - '*'
+    paths:
+      - .github/workflows/deploy.yml
+      - frontend/**
+      - backend/**
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "deploy"
+  cancel-in-progress: true
+
+jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          frontend:
+            - .github/workflows/deploy.yml
+            - 'frontend/**'
+          backend:
+            - .github/workflows/deploy.yml
+            - 'backend/**'
+          
+  # Deploy Backend
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs:
+      - paths-filter
+    if: github.ref == 'refs/heads/main' && needs.paths-filter.outputs.backend == 'true'
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .dgraph/cache
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
+      - name: Install dependencies
+        run: yarn install
+      - name: Deploy to Dgraph Cloud
+        env:
+          CEREBRO_JWT: ${{ secrets.CEREBRO_JWT }}
+          DEPLOYMENT_NAME: ${{ secrets.BACKEND_NAME }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
+        run: yarn run deploy
+
+  # Build job
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs:
+      - paths-filter
+    if: needs.paths-filter.outputs.frontend == 'true'
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .frontend/cache
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
+      - name: Install dependencies
+        run: yarn install
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Build GitHub Pages
+        env:
+          CI: true
+          NODE_ENV: production
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_URL: ${{ secrets.AUTH0_URL }}
+        run: npx expo export:web
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./frontend/web-build"
+
+  # Deployment job
+  deploy-frontend:
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
