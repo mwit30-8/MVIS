@@ -106,11 +106,12 @@ jobs:
         uses: actions/configure-pages@v2
       - name: Build GitHub Pages
         env:
+          CI: true
           NODE_ENV: production
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_URL: ${{ secrets.AUTH0_URL }}
-        run: yarn run export:web
+        run: npx expo export:web
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

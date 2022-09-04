@@ -132,7 +132,7 @@ services:
       - ./frontend/assets:/app/assets:ro
       - ./frontend/src:/app/src:ro
     restart: on-failure
-    command: yarn run dev:web
+    command: yarn run web
 
 volumes:
   # dgraph_zero: {}
