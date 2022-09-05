@@ -90,7 +90,14 @@ const DisplayBackendVersion: FC = () => {
 };
 
 const DisplayAuthUsername: FC = () => {
-  const { loading, error, data } = useQuery(gql`query Name{name}`);
+  const { loading, error, data } = useQuery(gql`query Name {
+  getAuthState(isAuthenticated: "true") {
+    idToken {
+      name
+    }
+  }
+}
+`);
   if (loading) return <Text>Loading...</Text>;
   if (error) {
     console.error(error);
@@ -100,10 +107,17 @@ const DisplayAuthUsername: FC = () => {
   return (
     <>
       {
-        data.name ?
-          <Text>
-            You are logged in, {data.name}
-          </Text >
+        data.getAuthState.idToken ?
+          (
+            data.getAuthState.idToken.name ?
+              <Text>
+                You are logged in, {data.getAuthState.idToken.name}.
+              </Text >
+              :
+              <Text>
+                You are logged in.
+              </Text >
+          )
           :
           <Text>
             You are not logged in.
