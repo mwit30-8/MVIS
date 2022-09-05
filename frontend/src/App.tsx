@@ -1,9 +1,10 @@
-import { ApolloProvider, gql, useQuery } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 import * as AuthSession from 'expo-auth-session';
 import { StatusBar } from 'expo-status-bar';
 import * as WebBrowser from 'expo-web-browser';
 import React, { FC, StrictMode, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Platform, StyleSheet, Text, View } from 'react-native';
+import * as graphql from '../generated/graphql';
 import { createBackendClient, verifyJwt } from './util';
 import * as config from './util/config';
 
@@ -75,7 +76,7 @@ const Auth: FC<IAuthProp> = (props) => {
 };
 
 const DisplayBackendVersion: FC = () => {
-  const { loading, error, data } = useQuery(gql`query Version{version}`);
+  const { loading, error, data } = graphql.useVersionQuery();
   if (loading) return <Text>Loading...</Text>;
   if (error) {
     console.error(error);
@@ -84,20 +85,13 @@ const DisplayBackendVersion: FC = () => {
 
   return (
     <Text>
-      Backend version: {data.version}
+      Backend version: {data!.version}
     </Text>
   );
 };
 
 const DisplayAuthUsername: FC = () => {
-  const { loading, error, data } = useQuery(gql`query Name {
-  getAuthState(isAuthenticated: "true") {
-    idToken {
-      name
-    }
-  }
-}
-`);
+  const { loading, error, data } = graphql.useNameQuery();
   if (loading) return <Text>Loading...</Text>;
   if (error) {
     console.error(error);
@@ -107,11 +101,11 @@ const DisplayAuthUsername: FC = () => {
   return (
     <>
       {
-        data.getAuthState.idToken ?
+        data!.getAuthState?.idToken ?
           (
-            data.getAuthState.idToken.name ?
+            data!.getAuthState.idToken.name ?
               <Text>
-                You are logged in, {data.getAuthState.idToken.name}.
+                You are logged in, {data!.getAuthState.idToken.name}.
               </Text >
               :
               <Text>

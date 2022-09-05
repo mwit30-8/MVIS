@@ -1,5 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import schema from '../../generated/introspection';
 import * as config from './config';
 import * as jose from "jose"
 
@@ -19,7 +20,9 @@ export const createBackendClient = (token?: string) => {
     });
     return new ApolloClient({
         link: authLink.concat(httpLink),
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            possibleTypes: schema.possibleTypes
+        }),
     });
 }
 

@@ -1,0 +1,7 @@
+query Name {
+  getAuthState(isAuthenticated: "true") {
+    idToken {
+      name
+    }
+  }
+}
