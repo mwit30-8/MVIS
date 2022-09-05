@@ -15,8 +15,6 @@ module.exports = (isProduction = (process.env.NODE_ENV == "production")) => {
       // Add your plugins here
       // Learn more about plugins from https://webpack.js.org/configuration/plugins/
       new webpack.DefinePlugin({
-        'process.env.AUTH0_URL': JSON.stringify(process.env.AUTH0_URL),
-        'process.env.AUTH0_CLIENT_ID': JSON.stringify(process.env.AUTH0_CLIENT_ID),
       }),
       new NodePolyfillPlugin(),
     ],

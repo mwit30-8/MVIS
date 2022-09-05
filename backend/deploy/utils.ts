@@ -81,15 +81,13 @@ export function getDeploymentClient(backend_url: string, jwtToken?: string): Pro
         resolver(deployment_client);
     });
 }
-export function buildSchema(schema_path: string, args: { AUTH0_URL: string, AUTH0_CLIENT_ID: string }): Promise<string> {
+export function buildSchema(schema_path: string, args: { AUTH0_DOMAIN: string, AUTH0_CLIENT_ID: string }): Promise<string> {
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
-        const schema = `
-${schema_file.toString()}
+        const schema = `${schema_file.toString()}
 
-# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"${args.AUTH0_URL}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
-
+# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"${args.AUTH0_DOMAIN}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
 `;
         resolver(schema);
     });

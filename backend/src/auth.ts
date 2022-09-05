@@ -1,4 +1,3 @@
-import * as config from './config';
 import type jwt from 'jsonwebtoken';
 
 /**
