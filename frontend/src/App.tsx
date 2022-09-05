@@ -41,9 +41,9 @@ const Auth: FC<IAuthProp> = (props) => {
       return;
     } else if (result.type === "success") {
       // Retrieve the JWT token and decode it
-      const jwtToken = result.params.id_token;
-      verifyJwt(jwtToken).then((payload) => {
-        props.setJwt(jwtToken);
+      const idToken = result.params.id_token;
+      verifyJwt(idToken).then((payload) => {
+        props.setJwt(idToken);
         setLogin(true);
       });
     } else {
