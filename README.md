@@ -16,25 +16,101 @@ This project is part of the course in Mahidol Wittayanusorn School.
 ·
 [Request Feature](https://github.com/mwit30-8/MVIS/issues)
 
+## Dependencies
+
+- [Yarn](https://yarnpkg.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
 ## Getting Started
 
 1. Clone the repo
 
    ```sh
    git clone https://github.com/mwit30-8/MVIS.git
+   cd MVIS
    ```
 
-2. Build docker image
+2. Run DGraph locally at <http://localhost:8080/graphql>
 
-   ```sh
-   docker-compose build
-   ```
+   1. Change directory to `/backend`
 
-3. Run the software at <http://localhost:19006>
+      ```sh
+      cd backend
+      ```
 
-   ```sh
-   docker-compose --profile=full up
-   ```
+   2. Build and run
+
+      ```sh
+      docker-compose build # Build docker images
+      docker-compose up # Run DGraph
+      # or
+      docker-compose up --build # Build and Run docker images
+      ```
+
+      Use `-d` flag to run in background.
+
+3. Deploy graphql schema and lambda script
+
+   1. Change directory to `/backend`
+
+      ```sh
+      cd backend
+      ```
+
+   2. Set environmental variable
+
+      - `AUTH0_CLIENT_ID` and `AUTH0_URL`
+
+      You may define the variable in `/backend/.env`.
+
+      If you are deploying to DGraph Cloud, there are additional variables to be set.
+
+      - `CEREBRO_JWT` or both `CEREBRO_EMAIL` and `CEREBRO_PASSWORD`
+      - `DEPLOYMENT_NAME`
+
+   3. Build and deploy
+
+      ```sh
+      yarn build # deploy to local DGraph
+      ```
+
+      or
+
+      ```sh
+      yarn deploy # deploy to DGraph Cloud
+      ```
+
+4. Run frontend application
+
+   1. Change directory to `/frontend`
+
+      ```sh
+      cd frontend
+      ```
+
+   2. Set environmental variable
+
+      - `AUTH0_CLIENT_ID` and `AUTH0_DOMAIN`
+      - `BACKEND_URL` (Usually <http://localhost:8080/graphql> for local DGraph)
+      - `BACKEND_API_KEY` (may be required by DGraph Cloud)
+
+      You may define the variable in `/frontend/.env`.
+
+   3. Build graphql code
+
+      This must be re-run every time the schema, queries, and/or mutations change.
+
+      ```sh
+      yarn codegen
+      ```
+
+   4. Run Expo dev client
+
+      This will automatically watches over changes in `/frontend/src`.
+
+      ```sh
+      yarn start
+      ```
 
 ## Contributing
 

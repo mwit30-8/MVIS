@@ -1,7 +1,8 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import schema from '../../generated/introspection';
+import * as graphql from '../../generated/graphql';
 import * as config from './config';
-import * as jose from "jose"
 
 export const createBackendClient = (token?: string) => {
     const httpLink = new HttpLink({
@@ -12,22 +13,21 @@ export const createBackendClient = (token?: string) => {
         if (token)
             headers["X-MVIS-Auth-Token"] = `Bearer ${token}`;
         if (config.BACKEND_API_KEY)
-            headers["DG-Auth"] = config.BACKEND_API_KEY
+            headers["X-Auth-Token"] = config.BACKEND_API_KEY; // header["DG-Auth"]
         return {
             headers
         }
     });
     return new ApolloClient({
         link: authLink.concat(httpLink),
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            possibleTypes: schema.possibleTypes
+        }),
     });
 }
 
 export const verifyJwt = async (token: string) => {
-    const AUTH0_JWKS_URL = `${config.AUTH0_URL}/.well-known/jwks.json`;
-    const JWKS = jose.createRemoteJWKSet(new URL(AUTH0_JWKS_URL));
-    const { payload, protectedHeader } = await jose.jwtVerify(token, JWKS, {
-        audience: [config.AUTH0_CLIENT_ID],
-    });
-    return payload;
+    const client = createBackendClient(token);
+    const isAuth = await client.query({ query: graphql.IsAuthenticatedDocument }) as graphql.IsAuthenticatedQueryResult;
+    return isAuth.data?.getAuthState?.isAuthenticated === "true";
 }

@@ -55,9 +55,11 @@ jobs:
           NODE_ENV: production
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_URL: ${{ secrets.AUTH0_URL }}
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_URL }}
           BACKEND_API_KEY: ${{ secrets.BACKEND_API_KEY }}
-        run: npx expo export:web
+        run: |
+          yarn codegen
+          npx expo export:web
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

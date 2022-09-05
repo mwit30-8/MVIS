@@ -81,26 +81,32 @@ export function getDeploymentClient(backend_url: string, jwtToken?: string): Pro
         resolver(deployment_client);
     });
 }
-export function buildSchema(schema_path: string, args: { AUTH0_URL: string, AUTH0_CLIENT_ID: string }): Promise<string> {
+export function getGeneralClient(backend_url: string, jwtToken?: string): Promise<GraphQLClient> {
+    return new Promise((resolver) => {
+        const deployment_client = new GraphQLClient(`${backend_url}/graphql`);
+        if (jwtToken)
+            deployment_client.setHeader('X-Auth-Token', jwtToken);
+        resolver(deployment_client);
+    });
+}
+export function buildSchema(schema_path: string, args: { AUTH0_DOMAIN: string, AUTH0_CLIENT_ID: string }): Promise<string> {
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
-        const schema = `
-${schema_file.toString()}
+        const schema = `${schema_file.toString()}
 
-# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"${args.AUTH0_URL}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
-
+# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"${args.AUTH0_DOMAIN}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
 `;
         resolver(schema);
     });
 }
-export function updateSchema(deployment_client: GraphQLClient, schema: string): Promise<any> {
+export function updateSchema(deployment_client: GraphQLClient, schema: string): Promise<string> {
     return new Promise((resolver, reject) => {
         const UPDATE_SCHEMA = gql`
             mutation($schema: String!) {
                 updateGQLSchema(input: { set: { schema: $schema } }) {
                     gqlSchema {
-                    schema
+                        generatedSchema
                     }
                 }
             }
@@ -109,7 +115,7 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
             schema
         };
         deployment_client.request(UPDATE_SCHEMA, VARIABLE)
-            .then(response => resolver(response))
+            .then(response => resolver(response.updateGQLSchema.gqlSchema.generatedSchema))
             .catch(error => rejectGraphQLError(error, reject));
     });
 }
@@ -156,5 +162,20 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
                 .then(response => resolver(response))
                 .catch(error => rejectGraphQLError(error, reject));
         }).catch(err => reject(err));
+    });
+}
+export function initializeData(client: GraphQLClient): Promise<null> {
+    return new Promise(async (resolver, reject) => {
+        const INITIALIZE_AUTHSTATE = gql`
+            mutation InitializeAuthState {
+                addAuthState(input: {isAuthenticated: "true"}) {
+                    authState {
+                        isAuthenticated
+                    }
+                }
+            }
+        `;
+        await client.request(INITIALIZE_AUTHSTATE);
+        resolver(null)
     });
 }
