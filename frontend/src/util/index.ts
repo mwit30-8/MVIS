@@ -13,7 +13,7 @@ export const createBackendClient = (token?: string) => {
         if (token)
             headers["X-MVIS-Auth-Token"] = `Bearer ${token}`;
         if (config.BACKEND_API_KEY)
-            headers["DG-Auth"] = config.BACKEND_API_KEY
+            headers["X-Auth-Token"] = config.BACKEND_API_KEY; // header["DG-Auth"]
         return {
             headers
         }
