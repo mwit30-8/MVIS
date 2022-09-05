@@ -7,9 +7,6 @@ COPY ./package.json ./yarn.lock /app/
 RUN yarn install
 # --immutable --immutable-cache --check-cache
 
-ARG NODE_ENV=production
-ENV NODE_ENV ${NODE_ENV}
-
 COPY ./ /app/
 
 CMD yarn run deploy
