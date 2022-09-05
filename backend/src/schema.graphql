@@ -68,7 +68,10 @@ OpenID session id
 Current Authentication state
 """
 type AuthState @auth(
-    query: { rule: "query { queryAuthState(filter: { isAuthenticated: { eq: \"true\" } } ) { isAuthenticated }}" },
+    query: { and:[
+      { rule: "query { queryAuthState(filter: { isAuthenticated: { eq: \"true\" } } ) { isAuthenticated }}" },
+      { rule: "{$isAuthenticated: { eq: true } }" },
+    ]},
   	add: { rule: "query { queryAuthState(filter: { isAuthenticated: { eq: \"true\" } } ) { isAuthenticated }}" },
 ) @generate(
     query: {
@@ -82,7 +85,7 @@ type AuthState @auth(
     }
 ) {
     """
-    Always `"true"`
+    Always `"true"` since `AuthState` cannot be queried when unauthenticated.
     """
   isAuthenticated: String! @id
   idToken: IdToken @lambda

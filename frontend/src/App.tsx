@@ -43,9 +43,19 @@ const Auth: FC<IAuthProp> = (props) => {
     } else if (result.type === "success") {
       // Retrieve the JWT token and decode it
       const idToken = result.params.id_token;
-      verifyJwt(idToken).then((payload) => {
-        props.setJwt(idToken);
-        setLogin(true);
+      verifyJwt(idToken).then((isVerified) => {
+        if (isVerified) {
+          props.setJwt(idToken);
+          setLogin(true);
+        } else {
+          const alertTitle = "Authentication error";
+          const alertText = "invalid token";
+          if (Platform.OS === 'web') {
+            alert(alertText)
+          } else {
+            Alert.alert(alertTitle, alertText);
+          }
+        }
       });
     } else {
       const alertTitle = "Authentication error";
