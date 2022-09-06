@@ -156,15 +156,19 @@ export function buildLambda(isProduction: boolean = false, asString: boolean = f
         const webpack = (await import('webpack').then(webpack => webpack as unknown as typeof webpack.default));
         const config = (await import('../webpack.config').then(config => config as unknown as typeof config.default))(isProduction);
         const compiler = webpack(config);
+        console.log("A");
         if (asString) {
             const { createFsFromVolume, Volume } = await import('memfs');
             const fs = createFsFromVolume(new Volume());
             compiler.outputFileSystem = fs;
         }
         compiler.run((err) => {
+            console.log("B");
             if (err) reject(err);
             compiler.close(async (closeErr) => {
+                console.log("C");
                 if (closeErr) reject(closeErr);
+                console.log("D");
                 if (asString)
                     compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
                         if (err) reject(err);

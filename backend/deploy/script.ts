@@ -8,21 +8,15 @@ export async function local(): Promise<void> {
     const deployment_client = await utils.getDeploymentClient(BACKEND_URL);
     const client = await utils.getGeneralClient(BACKEND_URL);
     const updateSchema = async () => {
-        console.log('D');
         const schema = await utils.buildSchema(SCHEMA_PATH, {
             AUTH0_PUBLIC_KEY: process.env.AUTH0_PUBLIC_KEY as string,
             AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID as string,
         });
-        console.log('E');
         await utils.updateSchema(deployment_client, schema);
-        console.log('F');
     }
     const buildLambda = async () => {
-        console.log('B');
         await utils.buildLambda();
-        console.log('C');
     }
-    console.log('A');
     await updateSchema();
     await buildLambda();
     await utils.initializeData(client);
