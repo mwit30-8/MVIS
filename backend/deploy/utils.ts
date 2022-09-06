@@ -89,13 +89,44 @@ export function getGeneralClient(backend_url: string, jwtToken?: string): Promis
         resolver(deployment_client);
     });
 }
-export function buildSchema(schema_path: string, { AUTH0_DOMAIN, AUTH0_CLIENT_ID }: { [key: string]: string }): Promise<string> {
+type IBuildSchemaArgs = {
+    AUTH0_DOMAIN?: string;
+    AUTH0_PUBLIC_KEY?: string;
+    AUTH0_CLIENT_ID?: string
+};
+export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promise<string> {
+    type IDgraph = {
+        Authorization: {
+            Header?: string;
+            Namespace?: string;
+            Algo?: string;
+            VerificationKey?: string;
+            JWKURL?: string;
+            JWKURLs?: string[];
+            Audience?: string[];
+            ClosedByDefault?: boolean;
+        }
+    };
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
+        const Dgraph: IDgraph = {
+            Authorization: {
+                "Header": "X-MVIS-Auth-Token",
+                "Namespace": "https://dgraph.io/jwt/claims"
+            }
+        };
+        if (args.AUTH0_DOMAIN)
+            Dgraph.Authorization.JWKURL = `https://${args.AUTH0_DOMAIN}/.well-known/jwks.json`;
+        if (args.AUTH0_CLIENT_ID)
+            Dgraph.Authorization.Audience = [args.AUTH0_CLIENT_ID];
+        if (args.AUTH0_PUBLIC_KEY) {
+            Dgraph.Authorization.Algo = "RS256";
+            Dgraph.Authorization.VerificationKey = JSON.stringify(args.AUTH0_PUBLIC_KEY).slice(1, -1);
+        }
         const schema = `${schema_file.toString()}
 
-# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","jwkurls":["https://${AUTH0_DOMAIN}/.well-known/jwks.json"],"Audience":["${AUTH0_CLIENT_ID}"]}
+# Dgraph.Authorization ${JSON.stringify(Dgraph.Authorization)}
 `;
         resolver(schema);
     });

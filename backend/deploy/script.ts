@@ -9,7 +9,7 @@ export async function local(): Promise<void> {
     const client = await utils.getGeneralClient(BACKEND_URL);
     const updateSchema = async () => {
         const schema = await utils.buildSchema(SCHEMA_PATH, {
-            AUTH0_DOMAIN: process.env.AUTH0_DOMAIN as string,
+            AUTH0_PUBLIC_KEY: process.env.AUTH0_PUBLIC_KEY as string,
             AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID as string,
         });
         await utils.updateSchema(deployment_client, schema);
