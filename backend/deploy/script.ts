@@ -5,10 +5,6 @@ const SCHEMA_PATH = './src/schema.graphql';
 
 export async function local(): Promise<void> {
     const BACKEND_URL = "http://localhost:8080";
-    const buildLambda = async () => {
-        await utils.buildLambda();
-    }
-    await buildLambda();
     const deployment_client = await utils.getDeploymentClient(BACKEND_URL);
     const client = await utils.getGeneralClient(BACKEND_URL);
     const updateSchema = async () => {
@@ -18,7 +14,11 @@ export async function local(): Promise<void> {
         });
         await utils.updateSchema(deployment_client, schema);
     }
+    const buildLambda = async () => {
+        await utils.buildLambda();
+    }
     await updateSchema();
+    await buildLambda();
     await utils.initializeData(client);
     console.log(`::set-output name=url::${BACKEND_URL}/graphql`); // Return backend url for GitHub Actions
 }
