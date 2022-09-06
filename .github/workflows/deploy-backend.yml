@@ -45,6 +45,8 @@ jobs:
             ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
         run: yarn install
+      - name: TEST
+        run: curl https://${{ secrets.AUTH0_URL }}/.well-known/jwks.json
       - name: Deploy to local Dgraph
         env:
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
