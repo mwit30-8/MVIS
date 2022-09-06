@@ -150,31 +150,39 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
             .catch(error => rejectGraphQLError(error, reject));
     });
 }
-export function buildLambda(isProduction: boolean = false, fs?: IFs): Promise<string> {
+export function buildLambda(isProduction: boolean = false, asString: boolean = false): Promise<string | undefined> {
     return new Promise(async (resolver, reject) => {
         const path = await import('path');
         const webpack = (await import('webpack').then(webpack => webpack as unknown as typeof webpack.default));
         const config = (await import('../webpack.config').then(config => config as unknown as typeof config.default))(isProduction);
         const compiler = webpack(config);
-        if (fs)
+        if (asString) {
+            const { createFsFromVolume, Volume } = await import('memfs');
+            const fs = createFsFromVolume(new Volume());
             compiler.outputFileSystem = fs;
+        }
         compiler.run((err) => {
             if (err) reject(err);
             compiler.close(async (closeErr) => {
                 if (closeErr) reject(closeErr);
-                compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
-                    if (err) reject(err);
-                    resolver(data?.toString() ?? '');
-                });
+                if (asString)
+                    compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
+                        if (err) reject(err);
+                        resolver(data?.toString());
+                    });
+                else
+                    resolver(undefined);
             });
         });
     });
 }
 export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string): Promise<any> {
     return new Promise(async (resolver, reject) => {
-        const { createFsFromVolume, Volume } = await import('memfs');
-        const fs = createFsFromVolume(new Volume());
-        buildLambda(true, fs).then(async (content) => {
+        buildLambda(true, true).then(async (content) => {
+            if (!content) {
+                reject('No script generated.');
+                return;
+            }
             const encode = ((str: string) => Buffer.from(str).toString('base64'));
             const UPDATE_LAMBDA = gql`
                 mutation updateLambda($input: UpdateLambdaInput!){
