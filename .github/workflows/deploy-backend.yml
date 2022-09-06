@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Start local DGraph
-        run: docker-compose up -d --build
+        run: docker-compose up --wait --build
       - uses: actions/setup-node@v3
         with:
           node-version: 16
