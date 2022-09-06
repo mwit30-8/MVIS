@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@babel/core": "^7.18.13",
+    "@babel/core": "^7.19.0",
     "@expo/webpack-config": "^0.17.2",
     "@types/react": "~18.0.18",
     "@types/react-native": "~0.69.6",
