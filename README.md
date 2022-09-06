@@ -41,13 +41,21 @@ This project is part of the course in Mahidol Wittayanusorn School.
    2. Build and run
 
       ```sh
-      docker-compose build # Build docker images
-      docker-compose up # Run DGraph
+      docker compose build # Build docker images
+      docker compose up # Run DGraph
       # or
-      docker-compose up --build # Build and Run docker images
+      docker compose up --build # Build and Run docker images
       ```
 
-      Use `-d` flag to run in background.
+      Use `--wait` flag to run in background.
+
+   3. Shutdown DGraph
+
+      Only run when run DGraph in background and done working with DGraph.
+
+      ```sh
+      docker compose down --volumes
+      ```
 
 3. Deploy graphql schema and lambda script
 

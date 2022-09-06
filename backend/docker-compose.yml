@@ -1,88 +1,76 @@
 version: '3.9'
 
 services:
-  # dgraph_zero:
-  #   image: dgraph/dgraph:latest
-  #   container_name: dgraph_zero
-  #   ports:
-  #     # - '5080:5080'
-  #     - '6080:6080'
-  #   environment:
-  #     DGRAPH_ZERO_MY: http://dgraph_zero:5080
-  #   volumes:
-  #     - dgraph_zero:/dgraph:rw
-  #   restart: on-failure
-  #   command: dgraph zero
-  #   healthcheck:
-  #     test: curl http://dgraph_zero:6080/state || exit 1
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 15s
-
-  # dgraph_alpha:
-  #   image: dgraph/dgraph:latest
-  #   container_name: dgraph_alpha
-  #   depends_on:
-  #     dgraph_zero:
-  #       condition: service_healthy
-  #   ports:
-  #     # - '7080:7080'
-  #     - '8080:8080'
-  #     # - '9080:9080'
-  #   environment:
-  #     DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker"
-  #     DGRAPH_ALPHA_ZERO: http://dgraph_zero:5080
-  #     DGRAPH_ALPHA_MY: http://dgraph_alpha:7080
-  #   volumes:
-  #     - dgraph_alpha:/dgraph:rw
-  #   restart: on-failure
-  #   command: dgraph alpha
-  #   healthcheck:
-  #     test: curl http://dgraph_alpha:8080/health || exit 1
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 15s
-
-  dgraph:
-    image: dgraph/standalone:v21.03.2
-    container_name: dgraph
+  zero:
+    image: dgraph/dgraph:v21.12.0
+    container_name: zero
+    working_dir: /data/zero
     ports:
       # - '5080:5080'
       - '6080:6080'
-      # - '7080:7080'
-      - '8080:8080'
-      # - '9080:9080'
-      - '8000:8000'
+    labels:
+      cluster: test
+      service: zero
     environment:
-      DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker" # dgraph lambda endpoint
+      DGRAPH_ZERO_MY: zero:5080
     volumes:
       - dgraph:/dgraph:rw
-    # restart: on-failure
+    restart: on-failure
+    command: dgraph zero
     healthcheck:
-      test: curl http://dgraph:8080/health || exit 1
+      test: curl http://zero:6080/state || exit 1
       interval: 10s
       timeout: 10s
       retries: 3
       start_period: 15s
 
-  dgraph_lambda:
-    image: dgraph/dgraph-lambda:latest
-    container_name: dgraph_lambda
+  alpha:
+    image: dgraph/dgraph:v21.12.0
+    working_dir: /data/alpha
+    container_name: alpha
     depends_on:
-      dgraph:
+      zero:
+        condition: service_healthy
+    ports:
+      # - '7080:7080'
+      - '8080:8080'
+      # - '9080:9080'
+    labels:
+      cluster: test
+      service: alpha
+    environment:
+      DGRAPH_ALPHA_ZERO: zero:5080
+      DGRAPH_ALPHA_MY: alpha:7080
+      DGRAPH_ALPHA_SECURITY: "whitelist=0.0.0.0/0"
+      DGRAPH_ALPHA_LAMBDA: "url=http://lambda:8686/graphql-worker"
+    volumes:
+      - dgraph:/dgraph:rw
+    restart: on-failure
+    command: dgraph alpha
+    healthcheck:
+      test: curl http://alpha:8080/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  lambda:
+    image: dgraph/dgraph-lambda:1.4.0
+    container_name: lambda
+    depends_on:
+      alpha:
         condition: service_healthy
     ports:
       - '8686:8686'
+    labels:
+      cluster: test
+      service: lambda
     environment:
-      DGRAPH_URL: http://dgraph:8080 # dgraph alpha endpoint
+      DGRAPH_URL: http://alpha:8080 # dgraph alpha endpoint
     volumes:
       - ./dist:/app/script:ro
     restart: on-failure
 
 volumes:
-  # dgraph_zero: {}
-  # dgraph_alpha: {}
   dgraph: {}
-  lambda_script: {}
+  script: {}
