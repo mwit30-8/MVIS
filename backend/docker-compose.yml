@@ -71,7 +71,7 @@ services:
     image: dgraph/dgraph-lambda:latest
     container_name: dgraph_lambda
     depends_on:
-      dgraph:
+      dgraph_alpha:
         condition: service_healthy
     ports:
       - '8686:8686'
