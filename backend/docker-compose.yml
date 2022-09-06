@@ -41,6 +41,7 @@ services:
     environment:
       DGRAPH_ALPHA_ZERO: zero:5080
       DGRAPH_ALPHA_MY: alpha:7080
+      DGRAPH_ALPHA_SECURITY: "whitelist=0.0.0.0/0"
       DGRAPH_ALPHA_LAMBDA: "url=http://lambda:8686/graphql-worker"
     volumes:
       - dgraph:/dgraph:rw
