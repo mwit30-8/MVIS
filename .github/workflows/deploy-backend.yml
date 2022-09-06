@@ -49,7 +49,7 @@ jobs:
         env:
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
-        run: yarn run build
+        run: sudo yarn run build
       # Todo: Run test queries
       - name: Stop local DGraph
         if: always()
