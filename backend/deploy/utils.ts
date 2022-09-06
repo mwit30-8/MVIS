@@ -15,15 +15,6 @@ type BackendInfo = {
     lambdaScript: string,
 };
 
-function rejectGraphQLError(error: Error, reject: (reason?: any) => void = (reason) => { throw reason }) {
-    if (error.name === ClientError.name)
-        (error as ClientError).response.errors?.forEach((err) => {
-            reject(new Error(err.message));
-        });
-    else
-        reject(error);
-}
-
 export function getCerebroJWT(email: string, password: string): Promise<string> {
     return new Promise(async (resolver, reject) => {
         const LOGIN = gql`
@@ -40,7 +31,7 @@ export function getCerebroJWT(email: string, password: string): Promise<string> 
         const cerebro_client = new GraphQLClient(`${CEREBRO_URL}/graphql`);
         const CEREBRO_JWT = await cerebro_client.request(LOGIN, VARIABLE)
             .then((data: { login: { token: string } }) => resolver(data.login.token))
-            .catch(error => rejectGraphQLError(error, reject));
+            .catch(error => reject(error));
     })
 }
 export function getCerebroClient(cerebro_jwt: string): Promise<GraphQLClient> {
@@ -68,7 +59,7 @@ export function getBackendInfo(cerebro_client: GraphQLClient, name: string): Pro
         `;
         const deployments: BackendInfo[] = await cerebro_client.request(GET_DEPLOYMENTS)
             .then((data) => data.deployments)
-            .catch(error => rejectGraphQLError(error, reject));
+            .catch(error => reject(error));
         const backend_info = deployments.filter((deployment) => deployment.name === name)[0]
         resolver(backend_info);
     })
@@ -147,7 +138,7 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
         };
         deployment_client.request(UPDATE_SCHEMA, VARIABLE)
             .then(response => resolver(response.updateGQLSchema.gqlSchema.generatedSchema))
-            .catch(error => rejectGraphQLError(error, reject));
+            .catch(error => reject(error));
     });
 }
 export function buildLambda(isProduction: boolean = false, asString: boolean = false): Promise<string | undefined> {
@@ -164,15 +155,25 @@ export function buildLambda(isProduction: boolean = false, asString: boolean = f
         }
         compiler.run((err) => {
             console.log("B");
-            if (err) reject(err);
+            if (err) {
+                reject(err);
+                return;
+            }
             compiler.close(async (closeErr) => {
                 console.log("C");
-                if (closeErr) reject(closeErr);
+                if (closeErr) {
+                    reject(closeErr);
+                    return;
+                }
                 console.log("D");
                 if (asString)
                     compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
-                        if (err) reject(err);
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
                         resolver(data?.toString());
+                        return;
                     });
                 else
                     resolver(undefined);
@@ -203,7 +204,7 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
             };
             cerebro_client.request(UPDATE_LAMBDA, VARIABLE)
                 .then(response => resolver(response))
-                .catch(error => rejectGraphQLError(error, reject));
+                .catch(error => reject(error));
         }).catch(err => reject(err));
     });
 }
