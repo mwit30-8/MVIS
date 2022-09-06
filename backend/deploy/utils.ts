@@ -107,6 +107,7 @@ export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promis
                 "Namespace": "https://dgraph.io/jwt/claims"
             }
         };
+        console.log(args);
         if (args.AUTH0_DOMAIN)
             Dgraph.Authorization.JWKURL = `https://${args.AUTH0_DOMAIN}/.well-known/jwks.json`;
         if (args.AUTH0_CLIENT_ID)
