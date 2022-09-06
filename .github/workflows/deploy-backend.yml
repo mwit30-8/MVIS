@@ -30,8 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Start local DGraph
-        run: docker compose up --wait --build
+      # - name: Start local DGraph
+      #  run: docker compose up --wait --build
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -51,9 +51,9 @@ jobs:
           AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
         run: yarn run build
       # Todo: Run test queries
-      - name: Stop local DGraph
-        if: always()
-        run: docker compose down
+      # - name: Stop local DGraph
+      #   if: always()
+      #   run: docker compose down
 
   # Deploy
   deploy:
