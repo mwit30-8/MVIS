@@ -93,7 +93,6 @@ export function buildSchema(schema_path: string, { AUTH0_DOMAIN, AUTH0_CLIENT_ID
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
-        console.log(`"https://${AUTH0_DOMAIN}/.well-known/jwks.json"`)
         const schema = `${schema_file.toString()}
 
 # Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","jwkurls":["https://${AUTH0_DOMAIN}/.well-known/jwks.json"],"Audience":["${AUTH0_CLIENT_ID}"]}
