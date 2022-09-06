@@ -89,13 +89,14 @@ export function getGeneralClient(backend_url: string, jwtToken?: string): Promis
         resolver(deployment_client);
     });
 }
-export function buildSchema(schema_path: string, args: { AUTH0_DOMAIN: string, AUTH0_CLIENT_ID: string }): Promise<string> {
+export function buildSchema(schema_path: string, { AUTH0_DOMAIN, AUTH0_CLIENT_ID }: { [key: string]: string }): Promise<string> {
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
+        console.log(`"https://${AUTH0_DOMAIN}/.well-known/jwks.json"`)
         const schema = `${schema_file.toString()}
 
-# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"https://${args.AUTH0_DOMAIN}/.well-known/jwks.json","Audience":["${args.AUTH0_CLIENT_ID}"]}
+# Dgraph.Authorization {"Header":"X-MVIS-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","jwkurls":["https://${AUTH0_DOMAIN}/.well-known/jwks.json"],"Audience":["${AUTH0_CLIENT_ID}"]}
 `;
         resolver(schema);
     });
