@@ -21,7 +21,7 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "deploy"
+  group: "deploy-github-pages"
   cancel-in-progress: true
 
 jobs:
@@ -31,6 +31,8 @@ jobs:
     defaults:
       run:
         working-directory: ./frontend
+    environment:
+      name: build-frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,19 +49,22 @@ jobs:
             ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
       - name: Install dependencies
         run: yarn install
+      - name: Generate graphql in typescript
+        env:
+          NODE_ENV: production
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: yarn codegen
+        # Todo: Run tests
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Build GitHub Pages
         env:
-          CI: true
           NODE_ENV: production
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_DOMAIN: ${{ secrets.AUTH0_URL }}
           BACKEND_API_KEY: ${{ secrets.BACKEND_API_KEY }}
-        run: |
-          yarn codegen
-          npx expo export:web
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+        run: npx expo export:web
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

@@ -33,7 +33,7 @@ const Auth: FC<IAuthProp> = (props) => {
       },
     },
     {
-      authorizationEndpoint: `${config.AUTH0_DOMAIN}/authorize`,
+      authorizationEndpoint: `https://${config.AUTH0_DOMAIN}/authorize`,
     }
   );
 

@@ -20,6 +20,7 @@ export async function local(): Promise<void> {
     await updateSchema();
     await buildLambda();
     await utils.initializeData(client);
+    console.log(`::set-output name=url::${BACKEND_URL}/graphql`); // Return backend url for GitHub Actions
 }
 
 export async function server(): Promise<void> {
@@ -45,4 +46,5 @@ export async function server(): Promise<void> {
     await updateSchema();
     await updateLambda();
     await utils.initializeData(client);
+    console.log(`::set-output name=url::${BACKEND_URL}/graphql`); // Return backend url for GitHub Actions
 }
