@@ -59,7 +59,7 @@ This project is part of the course in Mahidol Wittayanusorn School.
 
    2. Set environmental variable
 
-      - `AUTH0_CLIENT_ID` and `AUTH0_URL`
+      - `AUTH0_CLIENT_ID` and `AUTH0_DOMAIN`
 
       You may define the variable in `/backend/.env`.
 
@@ -68,7 +68,13 @@ This project is part of the course in Mahidol Wittayanusorn School.
       - `CEREBRO_JWT` or both `CEREBRO_EMAIL` and `CEREBRO_PASSWORD`
       - `DEPLOYMENT_NAME`
 
-   3. Build and deploy
+   3. Install dependencies
+
+      ```sh
+      yarn install
+      ```
+
+   4. Build and deploy
 
       ```sh
       yarn build # deploy to local DGraph
@@ -96,7 +102,13 @@ This project is part of the course in Mahidol Wittayanusorn School.
 
       You may define the variable in `/frontend/.env`.
 
-   3. Build graphql code
+   3. Install dependencies
+
+      ```sh
+      yarn install
+      ```
+
+   4. Build graphql code
 
       This must be re-run every time the schema, queries, and/or mutations change.
 
@@ -104,7 +116,7 @@ This project is part of the course in Mahidol Wittayanusorn School.
       yarn codegen
       ```
 
-   4. Run Expo dev client
+   5. Run Expo dev client
 
       This will automatically watches over changes in `/frontend/src`.
 
