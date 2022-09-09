@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 const config: CodegenConfig = {
     schema: process.env.BACKEND_URL as string,
-    documents: ['./queries/**/*.graphql'],
+    documents: ['./src/queries.graphql'],
     emitLegacyCommonJSImports: false,
     generates: {
         'generated/graphql.ts': {

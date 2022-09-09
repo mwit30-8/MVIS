@@ -1,0 +1,17 @@
+query isAuthenticated {
+  getAuthState(isAuthenticated: "true") {
+    isAuthenticated
+  }
+}
+
+query Name {
+  getAuthState(isAuthenticated: "true") {
+    idToken {
+      name
+    }
+  }
+}
+
+query Version {
+  version
+}
