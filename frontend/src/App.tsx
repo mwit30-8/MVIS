@@ -7,6 +7,7 @@ import { Alert, Button, Platform, StyleSheet, Text, View } from 'react-native';
 import * as graphql from '../generated/graphql';
 import { createBackendClient, verifyJwt } from './util';
 import * as config from './util/config';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -159,3 +160,5 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+serviceWorkerRegistration.register();
