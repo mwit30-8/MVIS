@@ -46,11 +46,11 @@
     "@graphql-codegen/typescript-resolvers": "^2.7.3",
     "@types/react": "~18.0.18",
     "@types/react-native": "~0.69.6",
+    "@types/workbox-webpack-plugin": "^5.1.8",
     "babel-plugin-inline-dotenv": "^1.7.0",
     "dotenv": "^16.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.3",
-    "workbox-webpack-plugin": "^6.1.5",
     "workbox-background-sync": "^6.1.5",
     "workbox-broadcast-update": "^6.1.5",
     "workbox-cacheable-response": "^6.1.5",
@@ -62,6 +62,7 @@
     "workbox-range-requests": "^6.1.5",
     "workbox-routing": "^6.1.5",
     "workbox-strategies": "^6.1.5",
-    "workbox-streams": "^6.1.5"
+    "workbox-streams": "^6.1.5",
+    "workbox-webpack-plugin": "^6.5.4"
   }
 }
