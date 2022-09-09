@@ -18,13 +18,10 @@
     "@types/dotenv": "^8.2.0",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.7.16",
-    "@webpack-cli/generators": "^2.5.0",
     "graphql": "^16.6.0",
     "graphql-request": "^5.0.0",
-    "jose": "^4.9.2",
-    "jsonwebtoken": "^8.5.1",
     "memfs": "^3.4.7",
-    "prettier": "^2.7.1",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
     "typescript": "~4.8.3",
@@ -38,8 +35,5 @@
     "build": "ts-node ./deploy/local",
     "deploy:watch": "watch \"run-p build\" \"./src\"",
     "build:watch": "watch \"run-p build\" \"./src\""
-  },
-  "dependencies": {
-    "node-polyfill-webpack-plugin": "^2.0.1"
   }
 }
