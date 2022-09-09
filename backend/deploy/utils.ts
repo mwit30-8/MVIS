@@ -1,5 +1,4 @@
-import { ClientError, gql, GraphQLClient } from 'graphql-request';
-import type { IFs } from 'memfs';
+import { gql, GraphQLClient } from 'graphql-request';
 
 const CEREBRO_URL = "https://cerebro.cloud.dgraph.io";
 
