@@ -1,4 +1,6 @@
-/* eslint-disable no-restricted-globals */
+/// <reference lib="webworker" />
+export default null;
+declare let self: ServiceWorkerGlobalScope;
 
 // This service worker can be customized!
 // See https://developers.google.com/web/tools/workbox/modules
