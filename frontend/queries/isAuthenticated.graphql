@@ -1,5 +1,0 @@
-query isAuthenticated {
-  getAuthState(isAuthenticated: "true") {
-    isAuthenticated
-  }
-}
