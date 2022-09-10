@@ -17,7 +17,7 @@ interface IAuthProp {
   onSignOut?: () => void;
 }
 
-const Login: FC<IAuthProp> = (props) => {
+const Authenticate: FC<IAuthProp> = (props) => {
   const { signIn, signOut, state } = React.useContext(AuthContext);
 
   const [request, result, promptAsync] = AuthSession.useAuthRequest(
@@ -91,4 +91,4 @@ const Login: FC<IAuthProp> = (props) => {
   );
 };
 
-export default Login;
+export default Authenticate;
