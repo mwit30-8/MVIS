@@ -27,6 +27,7 @@
     "@apollo/client": "^3.6.9",
     "expo": "~46.0.9",
     "expo-auth-session": "~3.7.1",
+    "expo-constants": "~13.2.4",
     "expo-random": "~12.3.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
