@@ -11,7 +11,7 @@ addDecorator(withKnobs);
 
 // import stories
 configure(() => {
-  require('../src/stories');
+  require('../src/components/stories');
 }, module);
 
 // Refer to https://github.com/storybookjs/react-native/tree/master/app/react-native#getstorybookui-options
