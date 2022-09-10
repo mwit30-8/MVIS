@@ -132,6 +132,18 @@ This project is part of the course in Mahidol Wittayanusorn School.
       yarn start
       ```
 
+      If you want to run [storybook](https://storybook.js.org/) to test each component,
+      run the following 2 commands concurrently.
+
+      1. Run storybook server (Optional).
+         ```sh
+         yarn storybook
+         ```
+      2. Run Expo dev client.
+         ```sh
+         yarn start:storybook
+         ```
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
