@@ -5,7 +5,7 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches:
-      - '*'
+      - "*"
     paths:
       - .github/workflows/*-backend.yml
       - backend/**
@@ -21,8 +21,6 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    environment:
-      name: build-backend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -42,9 +40,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Deploy to local Dgraph
-        env:
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
         run: sudo -E yarn run build # Todo: Avoid using `sudo`.
         # Todo: Run tests (NO secret provided)
         # Todo: Avoid leaking secrets

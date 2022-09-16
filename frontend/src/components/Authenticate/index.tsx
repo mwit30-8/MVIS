@@ -17,6 +17,7 @@ interface IAuthProp {
   onSignOut?: () => void;
 }
 
+// Todo: Add UI for testing purpose: self-generating jwt
 const Authenticate: FC<IAuthProp> = (props) => {
   const { signIn, signOut, state } = React.useContext(AuthContext);
 
