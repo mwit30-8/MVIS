@@ -70,13 +70,13 @@ jobs:
       - name: Generate graphql in typescript
         env:
           NODE_ENV: production
-          BACKEND_URL: http://localhost:8080
+          BACKEND_URL: http://localhost:8080/graphql
         run: yarn codegen
         # Todo: Run tests
       - name: Build GitHub Pages
         env:
           NODE_ENV: production
-          BACKEND_URL: http://localhost:8080
+          BACKEND_URL: http://localhost:8080/graphql
         run: npx expo export:web
 
       - name: Stop local DGraph
