@@ -86,13 +86,13 @@ type IBuildSchemaArgs = {
 };
 export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promise<string> {
     type IDgraph = {
-        Authorization: {
+        Authorization?: {
             Header?: string;
             Namespace?: string;
             Algo?: string;
             VerificationKey?: string;
-            JWKURL?: string;
-            JWKURLs?: string[];
+            JWKUrl?: string;
+            JWKUrls?: string[];
             Audience?: string[];
             ClosedByDefault?: boolean;
         }
@@ -100,24 +100,28 @@ export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promis
     return new Promise(async (resolver, reject) => {
         const fs = await import('node:fs');
         const schema_file = fs.readFileSync(schema_path);
-        const Dgraph: IDgraph = {
-            Authorization: {
+        const Dgraph: IDgraph = {};
+        if (args.AUTH0_DOMAIN) {
+            Dgraph.Authorization = {
                 "Header": "X-MVIS-Auth-Token",
                 "Namespace": "https://dgraph.io/jwt/claims"
-            }
-        };
-        if (args.AUTH0_DOMAIN)
-            Dgraph.Authorization.JWKURL = `https://${args.AUTH0_DOMAIN}/.well-known/jwks.json`;
-        if (args.AUTH0_CLIENT_ID)
-            Dgraph.Authorization.Audience = [args.AUTH0_CLIENT_ID];
-        if (args.AUTH0_PUBLIC_KEY) {
+            };
+            Dgraph.Authorization.JWKUrl = `https://${args.AUTH0_DOMAIN}/.well-known/jwks.json`;
+        }
+        else if (args.AUTH0_PUBLIC_KEY) {
+            Dgraph.Authorization = {
+                "Header": "X-MVIS-Auth-Token",
+                "Namespace": "https://dgraph.io/jwt/claims"
+            };
             Dgraph.Authorization.Algo = "RS256";
             Dgraph.Authorization.VerificationKey = JSON.stringify(args.AUTH0_PUBLIC_KEY).slice(1, -1);
         }
-        const schema = `${schema_file.toString()}
+        if (Dgraph.Authorization && args.AUTH0_CLIENT_ID)
+            Dgraph.Authorization.Audience = [args.AUTH0_CLIENT_ID];
+        let schema = schema_file.toString();
+        if (Dgraph.Authorization)
+            schema += '\n# Dgraph.Authorization ${ JSON.stringify(Dgraph.Authorization) }\n';
 
-# Dgraph.Authorization ${JSON.stringify(Dgraph.Authorization)}
-`;
         resolver(schema);
     });
 }
