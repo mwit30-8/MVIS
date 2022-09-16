@@ -3,12 +3,12 @@ name: Deploy Expo with GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
-  push:
+  workflow_run:
+    workflows: ["Build and Test Expo"]
+    types:
+      - completed
     branches:
-      - '*'
-    paths:
-      - .github/workflows/deploy-frontend.yml
-      - frontend/**
+      - 'main'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -54,7 +54,6 @@ jobs:
           NODE_ENV: production
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
         run: yarn codegen
-        # Todo: Run tests
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Build GitHub Pages
@@ -72,7 +71,6 @@ jobs:
 
   # Deployment job
   deploy-frontend:
-    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
