@@ -4,6 +4,8 @@ import React, { FC, useEffect } from 'react';
 import { Alert, Button, Platform } from 'react-native';
 import * as config from '../../utils/config';
 import { AuthContext } from './context';
+import { createBackendClient } from '../../utils';
+import * as graphql from '../../../generated/graphql';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -53,6 +55,10 @@ const Authenticate: FC<IAuthProp> = (props) => {
       signIn(idToken).then((isVerified) => {
         if (isVerified) {
           props.onSignIn?.(idToken)
+          createBackendClient(idToken).mutate<graphql.CreateUserMutation, graphql.CreateUserMutationVariables>({
+            mutation: graphql.CreateUserDocument,
+            variables: { email: "" }
+          })
         } else {
           const alertTitle = "Authentication error";
           const alertText = "invalid token";

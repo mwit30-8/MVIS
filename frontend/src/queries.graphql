@@ -1,7 +1,17 @@
-mutation createUser {
+mutation createUser($email: String!) {
   addUser(input: { email: $email }) {
     user {
       email
+    }
+  }
+}
+
+query user {
+  queryUser(filter: { has: email }) {
+    idToken {
+      name
+      nickname
+      picture
     }
   }
 }
