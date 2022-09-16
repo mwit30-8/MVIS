@@ -6,7 +6,7 @@ import webpack from 'webpack';
 import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
 module.exports = async function (env: Environment, argv: Arguments) {
-    const isEnvProduction = !__DEV__;
+    const isEnvProduction = process.env.NODE_ENV === "production";
     const config = await createExpoWebpackConfigAsync(env, argv);
     // Customize the config before returning it.
     if (!config.plugins)

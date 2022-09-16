@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import AuthContextProvider, { AuthContext } from './components/Authenticate/context';
 import { InitialProps } from 'expo/build/launch/withExpoRoot.types';
@@ -8,34 +9,55 @@ import { InitialProps } from 'expo/build/launch/withExpoRoot.types';
 
 export type IRouteParam = {
   Login: undefined;
-  Preferrence: undefined;
-  Profile: undefined;
+  Home: undefined;
 };
-const Tab = createBottomTabNavigator<IRouteParam>();
+const Navigator = createNativeStackNavigator<IRouteParam>();
+export type IRouteParamHome = {
+  Profile: undefined;
+  Preferrence: undefined;
+};
+const HomeNavigator = createBottomTabNavigator<IRouteParamHome>();
 
+const Home: React.FC = () => {
+  return (
+    <HomeNavigator.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName={'Profile'}
+    >
+      <HomeNavigator.Group>
+        <HomeNavigator.Screen name='Profile' getComponent={() => require('./screens/Profile').default} />
+        <HomeNavigator.Screen name='Preferrence' getComponent={() => require('./screens/Preferrence').default} />
+      </HomeNavigator.Group>
+    </HomeNavigator.Navigator>
+  );
+}
 const _App: React.FC = () => {
-  const { state } = React.useContext(AuthContext)
+  const { state } = React.useContext(AuthContext);
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName={state.isSignout ? 'Login' : 'Profile'}
+      <Navigator.Navigator
+        initialRouteName={state.isSignout ? 'Login' : 'Home'}
+        screenOptions={{
+          headerShown: false,
+        }}
       >
         {
           state.isSignout ?
-            <>
-              <Tab.Screen name='Login' getComponent={() => require('./screens/Login').default} />
-            </>
-            : <>
-              <Tab.Screen name='Profile' getComponent={() => require('./screens/Profile').default} />
-            </>
+            <Navigator.Group>
+              <Navigator.Screen name='Login' getComponent={() => require('./screens/Login').default} />
+            </Navigator.Group>
+            :
+            <Navigator.Group>
+              <Navigator.Screen name='Home' component={Home} />
+            </Navigator.Group>
         }
-        <Tab.Group>
-          <Tab.Screen name='Preferrence' getComponent={() => require('./screens/Preferrence').default} />
-        </Tab.Group>
-      </Tab.Navigator>
+      </Navigator.Navigator>
     </NavigationContainer>
   );
 }
+
 const App: React.FC<InitialProps> = () => {
   return (
     <React.StrictMode>
