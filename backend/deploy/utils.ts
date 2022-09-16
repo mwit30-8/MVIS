@@ -120,7 +120,7 @@ export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promis
             Dgraph.Authorization.Audience = [args.AUTH0_CLIENT_ID];
         let schema = schema_file.toString();
         if (Dgraph.Authorization)
-            schema += `\n# Dgraph.Authorization ${ JSON.stringify(Dgraph.Authorization) }\n`;
+            schema += `\n# Dgraph.Authorization ${JSON.stringify(Dgraph.Authorization)}\n`;
 
         resolver(schema);
     });
@@ -209,6 +209,18 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
 }
 export function initializeData(client: GraphQLClient): Promise<null> {
     return new Promise(async (resolver, reject) => {
+        const INITIALIZE = gql`
+            mutation {
+                addPlace(input: [
+                    {name: "Gym"}
+                ]) {
+                    gqlSchema {
+                        generatedSchema
+                    }
+                }
+            }
+        `;
+        client.request(INITIALIZE)
         resolver(null)
     });
 }
