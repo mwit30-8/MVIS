@@ -46,7 +46,8 @@ jobs:
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_PUBLIC_KEY: ${{ secrets.AUTH0_PUBLIC_KEY }}
         run: sudo -E yarn run build # Todo: Avoid using `sudo`.
-      # Todo: Run test queries
+        # Todo: Run tests (NO secret provided)
+        # Todo: Avoid leaking secrets
       - name: Stop local DGraph
         if: always()
         run: docker compose down
