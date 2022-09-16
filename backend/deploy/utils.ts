@@ -120,7 +120,7 @@ export function buildSchema(schema_path: string, args: IBuildSchemaArgs): Promis
             Dgraph.Authorization.Audience = [args.AUTH0_CLIENT_ID];
         let schema = schema_file.toString();
         if (Dgraph.Authorization)
-            schema += '\n# Dgraph.Authorization ${ JSON.stringify(Dgraph.Authorization) }\n';
+            schema += `\n# Dgraph.Authorization ${ JSON.stringify(Dgraph.Authorization) }\n`;
 
         resolver(schema);
     });
