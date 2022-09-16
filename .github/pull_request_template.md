@@ -9,14 +9,13 @@ Please fill in this template.
 Select one of these and delete the others:
 
 If fixing a bug:
-- [ ] Fixes # <!-- Insert issue number. -->.
+- Fixes # <!-- Insert issue number. -->.
+- <!-- Describe the bug -->
 
 If implementing a feature:
-- [ ] Fixes # <!-- Insert issue number. -->.
+- Fixes # <!-- Insert issue number. -->.
+- <!-- Describe the feature -->
 
 If fixing up a pull request:
-- [ ] Fixup # <!-- Insert pull request number. -->.
-
-Describe the changes.
-
-<!-- Describe the changes. -->
+- Fixup # <!-- Insert pull request number. -->.
+- <!-- Describe the changes -->
