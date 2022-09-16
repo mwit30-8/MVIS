@@ -44,6 +44,7 @@ jobs:
           BACKEND_URL: ${{ secrets.BACKEND_URL }}
         run: yarn codegen
         # Todo: Run tests
+        # Todo: Avoid leaking secrets
       - name: Build GitHub Pages
         env:
           NODE_ENV: production
