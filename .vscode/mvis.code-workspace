@@ -29,6 +29,7 @@
             "vscode-extension",
             ".git/objects",
             ".vscode"
-        ]
+        ],
+        "powershell.cwd": "d:\\Documents\\MVIS\\frontend"
     }
 }
