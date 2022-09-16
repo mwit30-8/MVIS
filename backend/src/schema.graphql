@@ -89,8 +89,7 @@ type User
     query: { get: true, query: true, aggregate: false }
     mutation: { add: true, delete: true }
   ) {
-  id: ID
-  email: String
+  email: String! @id
   location: Place
   idToken: IdToken @lambda
 }

@@ -1,7 +1,8 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import schema from '../../generated/introspection';
+import { Buffer } from "buffer";
 import * as graphql from '../../generated/graphql';
+import schema from '../../generated/introspection';
 import * as config from './config';
 
 export const createBackendClient = (token?: string) => {
@@ -27,10 +28,19 @@ export const createBackendClient = (token?: string) => {
 }
 
 export const verifyJwt = async (token: string) => {
+    const parseBase64UrlJson = (base64url: string) => {
+        const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+        const json = Buffer.from(base64, 'base64').toString();
+        const object = JSON.parse(json);
+        return object;
+    };
+    const [_header, _payload, signature] = token.split('.')
+    const header = parseBase64UrlJson(_header);
+    const payload = parseBase64UrlJson(_payload);
     const client = createBackendClient(token);
     await client.mutate<graphql.CreateUserMutation, graphql.CreateUserMutationVariables>({
         mutation: graphql.CreateUserDocument,
-        variables: { email: "" }
+        variables: { email: payload.email }
     });
     const isAuth = await client.query<graphql.UserQuery, graphql.UserQueryVariables>({
         query: graphql.UserDocument
