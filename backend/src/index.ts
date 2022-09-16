@@ -3,7 +3,7 @@ import { decodeJwt } from './auth';
 
 addGraphQLResolvers({
     'Query.version': () => '0.0.0',
-    'AuthState.idToken': async ({ authHeader, graphql }) => {
+    'User.idToken': async ({ authHeader, graphql }) => {
         // This query only allowed when authentication token is verified by DGraph.
         const jwtPayload = await decodeJwt(authHeader?.value);
         return jwtPayload?.payload ?? null;
