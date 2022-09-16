@@ -55,10 +55,6 @@ const Authenticate: FC<IAuthProp> = (props) => {
       signIn(idToken).then((isVerified) => {
         if (isVerified) {
           props.onSignIn?.(idToken)
-          createBackendClient(idToken).mutate<graphql.CreateUserMutation, graphql.CreateUserMutationVariables>({
-            mutation: graphql.CreateUserDocument,
-            variables: { email: "" }
-          })
         } else {
           const alertTitle = "Authentication error";
           const alertText = "invalid token";

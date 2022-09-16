@@ -28,6 +28,12 @@ export const createBackendClient = (token?: string) => {
 
 export const verifyJwt = async (token: string) => {
     const client = createBackendClient(token);
-    const isAuth = await client.query({ query: graphql.IsAuthenticatedDocument }) as graphql.IsAuthenticatedQueryResult;
-    return isAuth.data?.getAuthState?.isAuthenticated === "true";
+    await client.mutate<graphql.CreateUserMutation, graphql.CreateUserMutationVariables>({
+        mutation: graphql.CreateUserDocument,
+        variables: { email: "" }
+    });
+    const isAuth = await client.query<graphql.UserQuery, graphql.UserQueryVariables>({
+        query: graphql.UserDocument
+    });
+    return isAuth.data?.queryUser?.[0]?.idToken !== undefined;
 }
