@@ -26,7 +26,7 @@ const DisplayBackendVersion: FC = () => {
 };
 
 const DisplayAuthUsername: FC = () => {
-    const { loading, error, data } = graphql.useNameQuery();
+    const { loading, error, data } = graphql.useUserQuery();
     if (loading) return <Text>Loading...</Text>;
     if (error) {
         console.error(error);
@@ -36,11 +36,11 @@ const DisplayAuthUsername: FC = () => {
     return (
         <>
             {
-                data!.getAuthState?.idToken ?
+                data!.queryUser?.[0]?.idToken ?
                     (
-                        data!.getAuthState.idToken.name ?
+                        data!.queryUser[0].idToken.name ?
                             <Text>
-                                You are logged in, {data!.getAuthState.idToken.name}.
+                                You are logged in, {data!.queryUser[0].idToken.name}.
                             </Text >
                             :
                             <Text>

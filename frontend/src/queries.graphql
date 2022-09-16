@@ -1,13 +1,58 @@
-query isAuthenticated {
-  getAuthState(isAuthenticated: "true") {
-    isAuthenticated
+mutation createUser($email: String!) {
+  addUser(input: { email: $email }) {
+    user {
+      email
+    }
   }
 }
 
-query Name {
-  getAuthState(isAuthenticated: "true") {
+query user {
+  queryUser(filter: { has: email }) {
     idToken {
       name
+      nickname
+      picture
+    }
+  }
+}
+
+mutation deleteUser {
+  deleteUser(filter: { has: email }) {
+    user {
+      email
+    }
+  }
+}
+
+query location($location: String!) {
+  getPlace(name: $location) {
+    capacity
+    participantsAggregate {
+      count
+    }
+  }
+}
+
+mutation checkIn($location: String!) {
+  updateUser(
+    input: { filter: { has: email }, set: { location: { name: $location } } }
+  ) {
+    user {
+      location {
+        name
+      }
+    }
+  }
+}
+
+mutation checkOut($location: String!) {
+  updateUser(
+    input: { filter: { has: email }, remove: { location: { name: $location } } }
+  ) {
+    user {
+      location {
+        name
+      }
     }
   }
 }
