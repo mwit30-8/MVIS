@@ -34,10 +34,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            .dgraph/cache
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
+            ./backend/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('./backend/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
         working-directory: ./backend
@@ -49,10 +47,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            .frontend/cache
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
+            ./frontend/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('./frontend/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
       - name: Generate graphql in typescript
