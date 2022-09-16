@@ -209,16 +209,6 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
 }
 export function initializeData(client: GraphQLClient): Promise<null> {
     return new Promise(async (resolver, reject) => {
-        const INITIALIZE_AUTHSTATE = gql`
-            mutation InitializeAuthState {
-                addAuthState(input: {isAuthenticated: "true"}) {
-                    authState {
-                        isAuthenticated
-                    }
-                }
-            }
-        `;
-        await client.request(INITIALIZE_AUTHSTATE);
         resolver(null)
     });
 }
