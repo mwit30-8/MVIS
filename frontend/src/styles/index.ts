@@ -7,4 +7,11 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    Banner : {
+        width:"100%" ,
+        height: 100,
+        backgroundColor: '#143095',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

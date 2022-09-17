@@ -79,7 +79,7 @@ const Authenticate: FC<IAuthProp> = (props) => {
       {state.isSignout ? (
         <Button
           disabled={!request}
-          title="Log in with Auth0"
+          title="Log in"
           onPress={() => promptAsync({ useProxy })}
         />
       ) : (
