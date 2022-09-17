@@ -53,12 +53,14 @@ const Provider: React.FC<React.PropsWithChildren> = (props) => {
                         isLoading: false,
                     };
                 case AuthActionEnum.SIGN_IN:
+                    SecureStore.setItemAsync('idToken', action.token);
                     return {
                         ...prevState,
                         isSignout: false,
                         idToken: action.token,
                     };
                 case AuthActionEnum.SIGN_OUT:
+                    SecureStore.deleteItemAsync('idToken');
                     return {
                         ...prevState,
                         isSignout: true,
