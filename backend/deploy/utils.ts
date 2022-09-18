@@ -212,7 +212,7 @@ export function initializeData(client: GraphQLClient): Promise<null> {
         const INITIALIZE_PLACE = gql`
             mutation addPlace($name: String!, $capacity: Int! = 0) {
                 addPlace(input: [
-                    {name: $name, capacity: $capacity, utils: []}
+                    {name: $name, capacity: $capacity, participants: []}
                 ]) {
                     __typename
                 }
