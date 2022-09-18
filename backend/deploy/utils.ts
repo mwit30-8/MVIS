@@ -210,7 +210,7 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
 export function initializeData(client: GraphQLClient): Promise<null> {
     return new Promise(async (resolver, reject) => {
         const INITIALIZE_PLACE = gql`
-            mutation addPlace($name: String!, $capacity: Int = 0) {
+            mutation addPlace($name: String!, $capacity: Int! = 0) {
                 addPlace(input: [
                     {name: $name, capacity: $capacity}
                 ]) {
