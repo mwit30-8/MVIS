@@ -209,18 +209,17 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string)
 }
 export function initializeData(client: GraphQLClient): Promise<null> {
     return new Promise(async (resolver, reject) => {
-        const INITIALIZE = gql`
-            mutation {
+        const INITIALIZE_PLACE = gql`
+            mutation addPlace($name: String!, $capacity: Int = 0) {
                 addPlace(input: [
-                    {name: "Gym"}
+                    {name: $name, capacity: $capacity}
                 ]) {
-                    gqlSchema {
-                        generatedSchema
-                    }
+                    __typename
                 }
             }
         `;
-        client.request(INITIALIZE)
+        const places = [{name: 'Gym', capacity: 10}]; // TODO: Fetch true data.
+        await Promise.all(places.map((place) => client.request(INITIALIZE_PLACE, place));
         resolver(null)
     });
 }
