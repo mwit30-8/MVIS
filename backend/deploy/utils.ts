@@ -219,7 +219,7 @@ export function initializeData(client: GraphQLClient): Promise<null> {
             }
         `;
         const places = [{name: 'Gym', capacity: 10}]; // TODO: Fetch true data.
-        await Promise.all(places.map((place) => client.request(INITIALIZE_PLACE, place));
+        await Promise.all(places.map((place) => client.request(INITIALIZE_PLACE, place)));
         resolver(null)
     });
 }
