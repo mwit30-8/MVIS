@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import AuthContextProvider, {
   AuthContext,
@@ -10,77 +10,77 @@ import { InitialProps } from "expo/build/launch/withExpoRoot.types";
 import { ApolloProvider } from "@apollo/client";
 import { createBackendClient } from "./utils";
 
-export type IRouteParam = {
+export type IRouteParamRoot = {
   Login: undefined;
-  Home: undefined;
+  Main: undefined;
 };
-const Navigator = createNativeStackNavigator<IRouteParam>();
-export type IRouteParamHome = {
+const RootNavigator = createNativeStackNavigator<IRouteParamRoot>();
+export type IRouteParamMain = {
   Profile: undefined;
   QrCode: undefined;
   Status: undefined;
   Home: undefined;
   Preferrence: undefined;
 };
-const HomeNavigator = createBottomTabNavigator<IRouteParamHome>();
+const MainNavigator = createBottomTabNavigator<IRouteParamMain>();
 
-const Home: React.FC = () => {
+const Main: React.FC<NativeStackScreenProps<IRouteParamRoot, "Main">> = () => {
   return (
-    <HomeNavigator.Navigator
+    <MainNavigator.Navigator
       screenOptions={{
         headerShown: false,
       }}
       initialRouteName={"Home"}
     >
-      <HomeNavigator.Group>
-        <HomeNavigator.Screen
+      <MainNavigator.Group>
+        <MainNavigator.Screen
           name="Profile"
           getComponent={() => require("./screens/Profile").default}
         />
-        <HomeNavigator.Screen
+        <MainNavigator.Screen
           name="QrCode"
           getComponent={() => require("./screens/QrCodescan").default}
         />
-        <HomeNavigator.Screen
+        <MainNavigator.Screen
           name="Status"
           getComponent={() => require("./screens/Status").default}
         />
-        <HomeNavigator.Screen
+        <MainNavigator.Screen
           name="Home"
           getComponent={() => require("./screens/Home").default}
         />
-        <HomeNavigator.Screen
+        <MainNavigator.Screen
           name="Preferrence"
           getComponent={() => require("./screens/Preferrence").default}
         />
-      </HomeNavigator.Group>
-    </HomeNavigator.Navigator>
+      </MainNavigator.Group>
+    </MainNavigator.Navigator>
   );
 };
-const _App: React.FC = () => {
+const App_: React.FC = () => {
   const { state } = React.useContext(AuthContext);
   return (
     <ApolloProvider client={createBackendClient(state.idToken)}>
       <NavigationContainer>
-        <Navigator.Navigator
-          initialRouteName={state.isSignout ? "Login" : "Home"}
+        <RootNavigator.Navigator
+          initialRouteName={state.isSignout ? "Login" : "Main"}
           screenOptions={{
             headerShown: false,
           }}
         >
           {state.isSignout ? (
-            <Navigator.Group>
-              <Navigator.Screen
+            <RootNavigator.Group>
+              <RootNavigator.Screen
                 name="Login"
                 getComponent={() => require("./screens/Login").default}
               />
-            </Navigator.Group>
+            </RootNavigator.Group>
           ) : (
-            <Navigator.Group>
-              <Navigator.Screen name="Home" component={Home} />
-            </Navigator.Group>
+            <RootNavigator.Group>
+              <RootNavigator.Screen name="Main" component={Main} />
+            </RootNavigator.Group>
           )}
-        </Navigator.Navigator>
+        </RootNavigator.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
@@ -90,7 +90,7 @@ const App: React.FC<InitialProps> = () => {
   return (
     <React.StrictMode>
       <AuthContextProvider>
-        <_App />
+        <App_ />
       </AuthContextProvider>
     </React.StrictMode>
   );

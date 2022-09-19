@@ -1,9 +1,9 @@
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image, Text, View } from "react-native";
 import * as Progress from "react-native-progress";
 import * as graphql from "../../generated/graphql";
-import type { IRouteParamHome } from "../App";
+import type { IRouteParamMain } from "../App";
 import styles from "../styles";
 
 const UserProfile: React.FC = () => {
@@ -36,22 +36,22 @@ const UserProfile: React.FC = () => {
   );
 };
 const UserStatus: React.FC = () => {
-    const activities = [
-        {
-            'name': 'book',
-            'completed': 132,
-            'total': 300,
-        }
-    ]
+  const activities = [
+    {
+      'name': 'book',
+      'completed': 132,
+      'total': 300,
+    }
+  ]
   return (
     <>
-    {
+      {
         activities.map((activity, i) => <React.Fragment key={i}>
-            <Text>{activity.name}: {activity.completed}/{activity.total}</Text>
-            <Progress.Bar progress={(1+activity.completed)/(1+activity.total)} width={200} />
-            </React.Fragment>
-            )
-    }
+          <Text>{activity.name}: {activity.completed}/{activity.total}</Text>
+          <Progress.Bar progress={(1 + activity.completed) / (1 + activity.total)} width={200} />
+        </React.Fragment>
+        )
+      }
       <Text>
         Todo: Fetch real extracirricular activity progress from external source.
         {"\n"}
@@ -61,7 +61,7 @@ const UserStatus: React.FC = () => {
   );
 };
 const App: React.FC<
-  NativeStackScreenProps<IRouteParamHome, "Profile">
+  BottomTabScreenProps<IRouteParamMain, "Profile">
 > = () => {
   return (
     <>

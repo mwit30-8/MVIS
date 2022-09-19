@@ -1,8 +1,10 @@
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScannedCallback, BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner';
+import type { IRouteParamMain } from "../App";
 
-export default function App() {
+const App: React.FC<BottomTabScreenProps<IRouteParamMain, "QrCode">> = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState('Not yet scanned')
@@ -55,6 +57,8 @@ export default function App() {
     </View>
   );
 }
+
+export default App;
 
 const styles1 = StyleSheet.create({
   container: {

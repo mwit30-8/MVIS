@@ -1,10 +1,10 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React from 'react';
 import { Text, View } from 'react-native';
-import type { IRouteParam } from '../App';
+import type { IRouteParamMain } from '../App';
 import styles from '../styles';
 
-const App: React.FC<NativeStackScreenProps<IRouteParam, 'Home'>> = () => {
+const App: React.FC<BottomTabScreenProps<IRouteParamMain, 'Home'>> = () => {
     return (
         <View style={styles.Banner}>
             <Text style={{
