@@ -13,7 +13,7 @@ export default {
     ],
     "githubUrl": "https://github.com/mwit30-8/MVIS.git",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
     "entryPoint": "./index.ts",
     "splash": {

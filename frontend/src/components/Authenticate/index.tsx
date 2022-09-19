@@ -4,8 +4,6 @@ import React, { FC, useEffect } from 'react';
 import { Alert, Button, Platform } from 'react-native';
 import * as config from '../../utils/config';
 import { AuthContext } from './context';
-import { createBackendClient } from '../../utils';
-import * as graphql from '../../../generated/graphql';
 
 WebBrowser.maybeCompleteAuthSession();
 

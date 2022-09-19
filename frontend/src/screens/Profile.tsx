@@ -1,26 +1,88 @@
-import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
-import { AuthContext } from '../components/Authenticate/context';
-import styles from '../styles';
-import TimedSlideshow from 'react-native-timed-slideshow';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { IRouteParam } from '../App';
+import React from "react";
+import { Text, View, Image } from "react-native";
+import { AuthContext } from "../components/Authenticate/context";
+import styles from "../styles";
+import TimedSlideshow from "react-native-timed-slideshow";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { IRouteParamHome } from "../App";
+import * as graphql from "../../generated/graphql";
+import * as Progress from "react-native-progress";
 
-const App: React.FC<NativeStackScreenProps<IRouteParam, 'Login'>> = ({ navigation }) => {
-    const { state } = React.useContext(AuthContext);
-    return (
-        <View style={styles.Banner}>
-            <Text style={{
-                color: '#EDE300',
-                fontWeight: "bold",
-                fontSize: 25
-            }}>
-                MVIS
-            </Text>
-
-        </View>
-
-    );
-}
+const UserProfile: React.FC = () => {
+  const { loading, error, data } = graphql.useUserQuery();
+  if (loading) return <Text>...loading...</Text>;
+  if (error) return <Text> Error :( </Text>;
+  return (
+    <>
+      {data?.queryUser?.[0]?.idToken ? (
+        <>
+          {
+            <Image
+              source={{
+                uri:
+                  data.queryUser[0].idToken.picture ??
+                  "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+              }}
+              style={{
+                width: 50,
+                height: 50,
+              }}
+            />
+          }
+          <Text>Welcome, {data.queryUser[0].idToken.name}</Text>
+        </>
+      ) : (
+        <Text> Failed to fetch. </Text>
+      )}
+    </>
+  );
+};
+const UserStatus: React.FC = () => {
+    const activities = [
+        {
+            'name': 'book',
+            'completed': 132,
+            'total': 300,
+        }
+    ]
+  return (
+    <>
+    {
+        activities.map((activity, i) => <React.Fragment key={i}>
+            <Text>{activity.name}: {activity.completed}/{activity.total}</Text>
+            <Progress.Bar progress={(1+activity.completed)/(1+activity.total)} width={200} />
+            </React.Fragment>
+            )
+    }
+      <Text>
+        Todo: Fetch real extracirricular activity progress from external source.
+        {"\n"}
+        (Not implemented to keep other students' privacy.)
+      </Text>
+    </>
+  );
+};
+const App: React.FC<
+  NativeStackScreenProps<IRouteParamHome, "Profile">
+> = () => {
+  return (
+    <>
+      <View style={styles.Banner}>
+        <Text
+          style={{
+            color: "#EDE300",
+            fontWeight: "bold",
+            fontSize: 25,
+          }}
+        >
+          MVIS
+        </Text>
+      </View>
+      <View style={styles.container}>
+        <UserProfile />
+        <UserStatus />
+      </View>
+    </>
+  );
+};
 export default App;
-
