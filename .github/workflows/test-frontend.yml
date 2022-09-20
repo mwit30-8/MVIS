@@ -59,13 +59,13 @@ jobs:
       - name: Generate graphql in typescript
         env:
           NODE_ENV: production
-          BACKEND_URL: ${{ step.dgraph.outputs.url }}
+          BACKEND_URL: ${{ steps.dgraph.outputs.url }}
         run: yarn codegen
         # Todo: Run tests
       - name: Build GitHub Pages
         env:
           NODE_ENV: production
-          BACKEND_URL: ${{ step.dgraph.outputs.url }}
+          BACKEND_URL: ${{ steps.dgraph.outputs.url }}
         run: npx expo export:web
 
       - name: Stop local DGraph
