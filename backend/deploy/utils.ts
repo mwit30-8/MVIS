@@ -1,8 +1,9 @@
 import { gql, GraphQLClient } from 'graphql-request';
+import type { Configuration } from 'webpack';
 
 const CEREBRO_URL = "https://cerebro.cloud.dgraph.io";
 
-type BackendInfo = {
+export type BackendInfo = {
     uid: string,
     name: string,
     zone: string,
@@ -39,7 +40,7 @@ export function getCerebroClient(cerebro_jwt: string): Promise<GraphQLClient> {
         resolver(deployment_client.setHeader('authorization', `Bearer ${cerebro_jwt}`));
     });
 }
-export function getBackendInfo(cerebro_client: GraphQLClient, name: string): Promise<BackendInfo> {
+export function getBackendInfo(cerebro_client: GraphQLClient, name: string): Promise<BackendInfo | undefined> {
     return new Promise(async (resolver, reject) => {
         const GET_DEPLOYMENTS = gql`
             {
@@ -59,7 +60,8 @@ export function getBackendInfo(cerebro_client: GraphQLClient, name: string): Pro
         const deployments: BackendInfo[] = await cerebro_client.request(GET_DEPLOYMENTS)
             .then((data) => data.deployments)
             .catch(error => reject(error));
-        const backend_info = deployments.filter((deployment) => deployment.name === name)[0]
+        const backend = deployments.filter((deployment) => deployment.name === name);
+        const backend_info = backend.length === 1 ? backend[0] : undefined;
         resolver(backend_info);
     })
 }
@@ -144,16 +146,17 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
             .catch(error => reject(error));
     });
 }
-export function buildLambda(): Promise<undefined>;
-export function buildLambda(asString: false, isProduction?: boolean): Promise<undefined>;
-export function buildLambda(asString: true, isProduction?: boolean): Promise<string>;
-export function buildLambda(asString: boolean = false, isProduction: boolean = false): Promise<string | undefined> {
+export function buildLambda(webpackConfig: string): Promise<undefined>;
+export function buildLambda(webpackConfig: string, asString: false, toFile?: true, isProduction?: boolean): Promise<undefined>;
+export function buildLambda(webpackConfig: string, asString: true, toFile?: boolean, isProduction?: boolean): Promise<string>;
+export function buildLambda(webpackConfig: string, asString?: boolean, toFile?: boolean, isProduction?: boolean): Promise<string | undefined>;
+export function buildLambda(webpackConfig: string, asString: boolean = false, toFile: boolean = true, isProduction: boolean = false): Promise<string | undefined> {
     return new Promise(async (resolver, reject) => {
         const path = await import('path');
         const webpack = (await import('webpack')).default;
-        const config = (await import('../webpack.config')).default(isProduction);
+        const config: Configuration = (await import(webpackConfig)).default();
         const compiler = webpack(config);
-        if (asString) {
+        if (!toFile) {
             const { createFsFromVolume, Volume } = await import('memfs');
             const fs = createFsFromVolume(new Volume());
             compiler.outputFileSystem = fs;
@@ -169,7 +172,7 @@ export function buildLambda(asString: boolean = false, isProduction: boolean = f
                     return;
                 }
                 if (asString)
-                    compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output.path, config.output.filename), (err, data) => {
+                    compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output?.path as string, config.output?.filename as string), (err, data) => {
                         if (err) {
                             reject(err);
                             return;
@@ -208,19 +211,17 @@ export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string,
             .catch(error => reject(error));
     });
 }
-export function initializeData(client: GraphQLClient): Promise<null> {
-    return new Promise(async (resolver, reject) => {
-        const INITIALIZE_PLACE = gql`
-            mutation addPlace($name: String!, $capacity: Int! = 0) {
-                addPlace(input: [
-                    {name: $name, capacity: $capacity, participants: []}
-                ]) {
-                    __typename
-                }
+export function initializeData(client: GraphQLClient): Promise<any> {
+    const INITIALIZE_PLACE = gql`
+        mutation addPlace($name: String!, $capacity: Int! = 0) {
+            addPlace(input: [
+                {name: $name, capacity: $capacity, participants: []}
+            ]) {
+                __typename
             }
-        `;
-        const places = [{ name: 'Gym', capacity: 10 }]; // TODO: Fetch true data.
-        await Promise.all(places.map((place) => client.request(INITIALIZE_PLACE, place)));
-        resolver(null)
-    });
+        }
+    `;
+    const places = [{ name: 'Gym', capacity: 10 }]; // TODO: Fetch true data.
+    const initialize_places = places.map((place) => client.request(INITIALIZE_PLACE, place));
+    return Promise.all(([] as Promise<any>[]).concat(initialize_places));
 }

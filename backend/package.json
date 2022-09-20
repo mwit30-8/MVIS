@@ -32,9 +32,9 @@
     "yarn-run-all": "^3.1.1"
   },
   "scripts": {
-    "deploy": "ts-node ./deploy server",
-    "build": "ts-node ./deploy local",
-    "deploy:watch": "ts-node ./deploy server --watch",
-    "build:watch": "ts-node ./deploy local --watch"
+    "deploy": "ts-node ./deploy --config deployment.json",
+    "build": "ts-node ./deploy --local --config deployment.json",
+    "deploy:watch": "ts-node ./deploy --watch --config deployment.json",
+    "build:watch": "ts-node ./deploy --local --watch --config deployment.json"
   }
 }

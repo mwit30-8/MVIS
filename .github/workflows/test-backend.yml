@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Deploy to local Dgraph
-        run: sudo -E yarn run build # Todo: Avoid using `sudo`.
+        run: yarn ts-node ./deploy --local --port 8080
         # Todo: Run tests (NO secret provided)
         # Todo: Avoid leaking secrets
       - name: Stop local DGraph
