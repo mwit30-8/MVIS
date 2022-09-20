@@ -40,7 +40,10 @@ jobs:
         run: yarn install
         working-directory: ./backend
       - name: Deploy to local Dgraph
-        run: yarn ts-node ./deploy --local --port 8080
+        run: |
+          sudo yarn ts-node ./deploy
+            --local
+            --port 8080
         working-directory: ./backend
 
       - name: Restore cache
