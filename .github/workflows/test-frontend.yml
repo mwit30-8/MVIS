@@ -41,10 +41,12 @@ jobs:
         working-directory: ./backend
       - name: Deploy to local Dgraph
         run: |
-          sudo yarn ts-node ./deploy
-            --local
-            --port 8080
+          sudo yarn ts-node ./deploy \
+            --local \
+            --port 8080 \
+            --github-action
         working-directory: ./backend
+        id: dgraph
 
       - name: Restore cache
         uses: actions/cache@v3
@@ -57,13 +59,13 @@ jobs:
       - name: Generate graphql in typescript
         env:
           NODE_ENV: production
-          BACKEND_URL: http://localhost:8080/graphql
+          BACKEND_URL: ${{ step.dgraph.outputs.url }}
         run: yarn codegen
         # Todo: Run tests
       - name: Build GitHub Pages
         env:
           NODE_ENV: production
-          BACKEND_URL: http://localhost:8080/graphql
+          BACKEND_URL: ${{ step.dgraph.outputs.url }}
         run: npx expo export:web
 
       - name: Stop local DGraph

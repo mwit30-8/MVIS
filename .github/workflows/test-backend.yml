@@ -39,9 +39,11 @@ jobs:
         run: yarn install
       - name: Deploy to local Dgraph
         run: |
-          sudo yarn ts-node ./deploy
-            --local
-            --port 8080
+          sudo yarn ts-node ./deploy \
+            --local \
+            --port 8080 \
+            --github-action
+        id: dgraph
         # Todo: Run tests (NO secret provided)
         # Todo: Avoid leaking secrets
       - name: Stop local DGraph
