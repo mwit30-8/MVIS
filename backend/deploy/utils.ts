@@ -144,11 +144,14 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
             .catch(error => reject(error));
     });
 }
-export function buildLambda(isProduction: boolean = false, asString: boolean = false): Promise<string | undefined> {
+export function buildLambda(): Promise<undefined>;
+export function buildLambda(asString: false, isProduction?: boolean): Promise<undefined>;
+export function buildLambda(asString: true, isProduction?: boolean): Promise<string>;
+export function buildLambda(asString: boolean = false, isProduction: boolean = false): Promise<string | undefined> {
     return new Promise(async (resolver, reject) => {
         const path = await import('path');
-        const webpack = (await import('webpack').then(webpack => webpack as unknown as typeof webpack.default));
-        const config = (await import('../webpack.config').then(config => config as unknown as typeof config.default))(isProduction);
+        const webpack = (await import('webpack')).default;
+        const config = (await import('../webpack.config')).default(isProduction);
         const compiler = webpack(config);
         if (asString) {
             const { createFsFromVolume, Volume } = await import('memfs');
@@ -180,31 +183,29 @@ export function buildLambda(isProduction: boolean = false, asString: boolean = f
         });
     });
 }
-export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string): Promise<any> {
+export function updateLambda(cerebro_client: GraphQLClient, backend_uid: string, script: string): Promise<any> {
     return new Promise(async (resolver, reject) => {
-        buildLambda(true, true).then(async (content) => {
-            if (!content) {
-                reject('No script generated.');
-                return;
+        if (!script) {
+            reject('No script generated.');
+            return;
+        }
+        const encode = ((str: string) => Buffer.from(str).toString('base64'));
+        const UPDATE_LAMBDA = gql`
+            mutation updateLambda($input: UpdateLambdaInput!){
+                updateLambda(input: $input)
             }
-            const encode = ((str: string) => Buffer.from(str).toString('base64'));
-            const UPDATE_LAMBDA = gql`
-                mutation updateLambda($input: UpdateLambdaInput!){
-                    updateLambda(input: $input)
-                }
-            `;
-            const encoded = encode(content);
-            const VARIABLE = {
-                input: {
-                    deploymentID: backend_uid,
-                    tenantID: 0,
-                    lambdaScript: encoded,
-                }
-            };
-            cerebro_client.request(UPDATE_LAMBDA, VARIABLE)
-                .then(response => resolver(response))
-                .catch(error => reject(error));
-        }).catch(err => reject(err));
+        `;
+        const encoded = encode(script);
+        const VARIABLE = {
+            input: {
+                deploymentID: backend_uid,
+                tenantID: 0,
+                lambdaScript: encoded,
+            }
+        };
+        cerebro_client.request(UPDATE_LAMBDA, VARIABLE)
+            .then(response => resolver(response))
+            .catch(error => reject(error));
     });
 }
 export function initializeData(client: GraphQLClient): Promise<null> {
@@ -218,7 +219,7 @@ export function initializeData(client: GraphQLClient): Promise<null> {
                 }
             }
         `;
-        const places = [{name: 'Gym', capacity: 10}]; // TODO: Fetch true data.
+        const places = [{ name: 'Gym', capacity: 10 }]; // TODO: Fetch true data.
         await Promise.all(places.map((place) => client.request(INITIALIZE_PLACE, place)));
         resolver(null)
     });
