@@ -156,6 +156,7 @@ jobs:
       - name: Get DGraph Cloud information
         run: yarn ts-node ./deploy --info
         id: dgraph
+        working-directory: ./backend
       - name: Restore cache
         uses: actions/cache@v3
         with:
