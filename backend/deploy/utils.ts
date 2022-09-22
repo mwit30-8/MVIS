@@ -146,16 +146,15 @@ export function updateSchema(deployment_client: GraphQLClient, schema: string): 
             .catch(error => reject(error));
     });
 }
-export function buildLambda(webpackConfig: string): Promise<undefined>;
-export function buildLambda(webpackConfig: string, asString: false, toFile?: true, isProduction?: boolean): Promise<undefined>;
-export function buildLambda(webpackConfig: string, asString: true, toFile?: boolean, isProduction?: boolean): Promise<string>;
-export function buildLambda(webpackConfig: string, asString?: boolean, toFile?: boolean, isProduction?: boolean): Promise<string | undefined>;
-export function buildLambda(webpackConfig: string, asString: boolean = false, toFile: boolean = true, isProduction: boolean = false): Promise<string | undefined> {
+export function buildLambda(webpackConfig: Configuration): Promise<undefined>;
+export function buildLambda(webpackConfig: Configuration, asString: false, toFile?: true, isProduction?: boolean): Promise<undefined>;
+export function buildLambda(webpackConfig: Configuration, asString: true, toFile?: boolean, isProduction?: boolean): Promise<string>;
+export function buildLambda(webpackConfig: Configuration, asString?: boolean, toFile?: boolean, isProduction?: boolean): Promise<string | undefined>;
+export function buildLambda(webpackConfig: Configuration, asString: boolean = false, toFile: boolean = true, isProduction: boolean = false): Promise<string | undefined> {
     return new Promise(async (resolver, reject) => {
         const path = await import('path');
         const webpack = (await import('webpack')).default;
-        const config: Configuration = (await import(webpackConfig)).default();
-        const compiler = webpack(config);
+        const compiler = webpack(webpackConfig);
         if (!toFile) {
             const { createFsFromVolume, Volume } = await import('memfs');
             const fs = createFsFromVolume(new Volume());
@@ -172,7 +171,7 @@ export function buildLambda(webpackConfig: string, asString: boolean = false, to
                     return;
                 }
                 if (asString)
-                    compiler.outputFileSystem.readFile((path.posix ?? path).join(config.output?.path as string, config.output?.filename as string), (err, data) => {
+                    compiler.outputFileSystem.readFile((path.posix ?? path).join(webpackConfig.output?.path as string, webpackConfig.output?.filename as string), (err, data) => {
                         if (err) {
                             reject(err);
                             return;
