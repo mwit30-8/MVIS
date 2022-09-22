@@ -136,7 +136,7 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.frontend == 'true'}}
-    needs: ["tested", "deploy-backend"]
+    needs: ["tested"]
     defaults:
       run:
         working-directory: ./frontend
