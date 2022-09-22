@@ -38,20 +38,24 @@ const UserProfile: React.FC = () => {
 const UserStatus: React.FC = () => {
   const activities = [
     {
-      'name': 'book',
-      'completed': 132,
-      'total': 300,
-    }
-  ]
+      name: "book",
+      completed: 132,
+      total: 300,
+    },
+  ];
   return (
     <>
-      {
-        activities.map((activity, i) => <React.Fragment key={i}>
-          <Text>{activity.name}: {activity.completed}/{activity.total}</Text>
-          <Progress.Bar progress={(1 + activity.completed) / (1 + activity.total)} width={200} />
+      {activities.map((activity, i) => (
+        <React.Fragment key={i}>
+          <Text>
+            {activity.name}: {activity.completed}/{activity.total}
+          </Text>
+          <Progress.Bar
+            progress={(1 + activity.completed) / (1 + activity.total)}
+            width={200}
+          />
         </React.Fragment>
-        )
-      }
+      ))}
       <Text>
         Todo: Fetch real extracirricular activity progress from external source.
         {"\n"}
@@ -60,9 +64,7 @@ const UserStatus: React.FC = () => {
     </>
   );
 };
-const App: React.FC<
-  BottomTabScreenProps<IRouteParamMain, "Profile">
-> = () => {
+const App: React.FC<BottomTabScreenProps<IRouteParamMain, "Profile">> = () => {
   return (
     <>
       <View style={styles.Banner}>

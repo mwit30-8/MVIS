@@ -1,7 +1,12 @@
-import React from 'react';
-import { GestureResponderEvent, TouchableHighlight } from 'react-native';
+import React from "react";
+import { GestureResponderEvent, TouchableHighlight } from "react-native";
 
-export default function Button({ onPress, children }: React.PropsWithChildren<{onPress?: (event: GestureResponderEvent) => void}>) {
+export default function Button({
+  onPress,
+  children,
+}: React.PropsWithChildren<{
+  onPress?: (event: GestureResponderEvent) => void;
+}>) {
   return <TouchableHighlight onPress={onPress}>{children}</TouchableHighlight>;
 }
 

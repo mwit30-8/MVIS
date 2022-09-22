@@ -1,10 +1,10 @@
 {
-    "recommendations": [
-        "bycedric.vscode-expo",
-        "christian-kohler.npm-intellisense",
-        "christian-kohler.path-intellisense",
-        "dbaeumer.vscode-eslint",
-        "streetsidesoftware.code-spell-checker",
-        "VisualStudioExptTeam.vscodeintellicode"
-    ]
+  "recommendations": [
+    "bycedric.vscode-expo",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "VisualStudioExptTeam.vscodeintellicode"
+  ]
 }

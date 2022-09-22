@@ -1,14 +1,17 @@
-import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
-import React, { FC, useEffect } from 'react';
-import { Alert, Button, Platform } from 'react-native';
-import * as config from '../../utils/config';
-import { AuthContext } from './context';
+import * as AuthSession from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
+import React, { FC, useEffect } from "react";
+import { Alert, Button, Platform } from "react-native";
+import * as config from "../../utils/config";
+import { AuthContext } from "./context";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const useProxy = Platform.select({ web: false, default: true });
-const redirectUri = AuthSession.makeRedirectUri({ useProxy, path: config.SERVED_PATH });
+const redirectUri = AuthSession.makeRedirectUri({
+  useProxy,
+  path: config.SERVED_PATH,
+});
 
 console.log(`Redirect URL: ${redirectUri}`);
 
@@ -52,12 +55,12 @@ const Authenticate: FC<IAuthProp> = (props) => {
       const idToken = result.params.id_token;
       signIn(idToken).then((isVerified) => {
         if (isVerified) {
-          props.onSignIn?.(idToken)
+          props.onSignIn?.(idToken);
         } else {
           const alertTitle = "Authentication error";
           const alertText = "invalid token";
-          if (Platform.OS === 'web') {
-            alert(alertText)
+          if (Platform.OS === "web") {
+            alert(alertText);
           } else {
             Alert.alert(alertTitle, alertText);
           }
@@ -66,9 +69,11 @@ const Authenticate: FC<IAuthProp> = (props) => {
       return;
     }
     const alertTitle = "Authentication error";
-    const alertText = (result.type === "error" ? result.params?.error_description : null) ?? "something went wrong";
-    if (Platform.OS === 'web') {
-      alert(alertText)
+    const alertText =
+      (result.type === "error" ? result.params?.error_description : null) ??
+      "something went wrong";
+    if (Platform.OS === "web") {
+      alert(alertText);
     } else {
       Alert.alert(alertTitle, alertText);
     }
@@ -83,10 +88,13 @@ const Authenticate: FC<IAuthProp> = (props) => {
           onPress={() => promptAsync({ useProxy })}
         />
       ) : (
-        <Button title="Log out" onPress={() => {
-          signOut();
-          props.onSignOut?.();
-        }} />
+        <Button
+          title="Log out"
+          onPress={() => {
+            signOut();
+            props.onSignOut?.();
+          }}
+        />
       )}
     </>
   );
