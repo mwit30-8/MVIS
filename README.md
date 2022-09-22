@@ -65,16 +65,14 @@ This project is part of the course in Mahidol Wittayanusorn School.
       cd backend
       ```
 
-   2. Set environmental variable
+   2. Setup `deployment.config.json`
 
-      - `AUTH0_CLIENT_ID` and `AUTH0_DOMAIN`
-
-      You may define the variable in `/backend/.env`.
+      - `auth0-clientid` and `auth0-domain` or `auth0-publickey`
 
       If you are deploying to DGraph Cloud, there are additional variables to be set.
 
-      - `CEREBRO_JWT` or both `CEREBRO_EMAIL` and `CEREBRO_PASSWORD`
-      - `DEPLOYMENT_NAME`
+      - `cerebro-token` or both `cerebro-email` and `cerebro-password`
+      - `deployment-name`
 
    3. Install dependencies
 

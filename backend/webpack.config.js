@@ -2,7 +2,8 @@
 const webpack = require("webpack");
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-module.exports = (isProduction = (process.env.NODE_ENV == "production")) => {
+module.exports = () => {
+  const isProduction = (process.env.NODE_ENV == "production")
   const path = require("path");
 
   const config = {

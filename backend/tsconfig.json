@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "module": "CommonJS",
-    "target": "es5",
     "allowJs": true,
+    "target": "ES2015",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
   },
-  "files": [
-    "deploy/local.ts",
-    "deploy/server.ts"
+  "include": [
+    "deploy/*"
   ]
 }
