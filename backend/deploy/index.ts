@@ -9,6 +9,13 @@ export default new Promise<void>(async (resolve) => {
     const argv = await yargs(hideBin(process.argv))
         .scriptName("deploy")
         .options({
+            'info': {
+                alias: 'i',
+                boolean: true,
+                type: 'boolean',
+                default: false,
+                describe: 'only log outputs (imply --github-action)',
+            },
             'watch': {
                 alias: 'w',
                 boolean: true,
@@ -145,8 +152,12 @@ export default new Promise<void>(async (resolve) => {
             graphqlClient
         };
     })();
-    if (argv.githubAction) {
+    if (argv.githubAction || argv.info) {
         console.log(`::set-output name=url::${info.backendUrl}/graphql`); // Return backend url for GitHub Actions
+        if (argv.info) {
+            resolve();
+            return;
+        }
     }
     const updateSchema = async () => {
         try {
