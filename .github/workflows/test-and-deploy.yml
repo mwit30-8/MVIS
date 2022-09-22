@@ -97,7 +97,7 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.backend == 'true'}}
-    needs: ["build-and-test"]
+    needs: ["tested"]
     environment:
       name: dgraph-cloud
       url: ${{ steps.dgraph.outputs.url }}
@@ -129,7 +129,7 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.frontend == 'true'}}
-    needs: ["build-and-test", "deploy-backend"]
+    needs: ["tested", "deploy-backend"]
     defaults:
       run:
         working-directory: ./frontend
@@ -186,7 +186,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: ["build-frontend"]
+    needs: ["tested"]
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
