@@ -8,99 +8,101 @@ export default new Promise<void>(async (resolve) => {
     const { hideBin } = await import('yargs/helpers');
     const argv = await yargs(hideBin(process.argv))
         .scriptName("deploy")
-        .option('watch', {
-            alias: 'w',
-            boolean: true,
-            type: 'boolean',
-            default: false,
-            describe: 'watch over file changes',
-        })
-        .option('local', {
-            alias: 'l',
-            boolean: true,
-            type: 'boolean',
-            default: false,
-            describe: 'deploy to local DGraph server',
-        })
-        .option('github-action', {
-            boolean: true,
-            type: 'boolean',
-            default: false,
-            describe: 'log the output for GitHub Actions',
-        })
-        .option('port', {
-            alias: 'p',
-            string: true,
-            type: 'string',
-            default: '8080',
-            describe: 'port of local DGraph server (ignored if deploy to DGraph cloud)',
-            requiresArg: true
-        })
-        .option('cerebro-email', {
-            alias: 'email',
-            string: true,
-            type: 'string',
-            describe: 'email for cerebro (DGraph Cloud)',
-            requiresArg: true
-        })
-        .option('cerebro-password', {
-            alias: 'password',
-            string: true,
-            type: 'string',
-            describe: 'password for cerebro (DGraph Cloud)',
-            requiresArg: true
-        })
-        .option('cerebro-token', {
-            alias: 'token',
-            string: true,
-            type: 'string',
-            describe: 'token for cerebro (DGraph Cloud)',
-            requiresArg: true
-        })
-        .option('deployment-name', {
-            alias: 'name',
-            string: true,
-            type: 'string',
-            describe: 'backend name for DGraph Cloud',
-            requiresArg: true
-        })
-        .option('auth0-domain', {
-            alias: 'domain',
-            string: true,
-            type: 'string',
-            describe: 'Auth0 domain for JWKs',
-            requiresArg: true
-        })
-        .option('auth0-clientid', {
-            alias: 'clientid',
-            string: true,
-            type: 'string',
-            describe: 'Audience for jwt verification',
-            requiresArg: true
-        })
-        .option('auth0-publickey', {
-            alias: 'publickey',
-            string: true,
-            type: 'string',
-            describe: 'Public key for jwt verification',
-            requiresArg: true
-        })
-        .option('webpack-config', {
-            alias: 'webpack',
-            string: true,
-            type: 'string',
-            default: './webpack.config.js',
-            describe: 'path to lambda script',
-            requiresArg: true,
-            required: true,
-        })
-        .option('schema', {
-            alias: 's',
-            string: true,
-            type: 'string',
-            default: './src/schema.graphql',
-            describe: 'path to graphql schema',
-            requiresArg: true
+        .options({
+            'watch': {
+                alias: 'w',
+                boolean: true,
+                type: 'boolean',
+                default: false,
+                describe: 'watch over file changes',
+            },
+            'local': {
+                alias: 'l',
+                boolean: true,
+                type: 'boolean',
+                default: false,
+                describe: 'deploy to local DGraph server',
+            },
+            'github-action': {
+                boolean: true,
+                type: 'boolean',
+                default: false,
+                describe: 'log the output for GitHub Actions',
+            },
+            'port': {
+                alias: 'p',
+                string: true,
+                type: 'string',
+                default: '8080',
+                describe: 'port of local DGraph server (ignored if deploy to DGraph cloud)',
+                requiresArg: true
+            },
+            'cerebro-email': {
+                alias: 'email',
+                string: true,
+                type: 'string',
+                describe: 'email for cerebro (DGraph Cloud)',
+                requiresArg: true
+            },
+            'cerebro-password': {
+                alias: 'password',
+                string: true,
+                type: 'string',
+                describe: 'password for cerebro (DGraph Cloud)',
+                requiresArg: true
+            },
+            'cerebro-token': {
+                alias: 'token',
+                string: true,
+                type: 'string',
+                describe: 'token for cerebro (DGraph Cloud)',
+                requiresArg: true
+            },
+            'deployment-name': {
+                alias: 'name',
+                string: true,
+                type: 'string',
+                describe: 'backend name for DGraph Cloud',
+                requiresArg: true
+            },
+            'auth0-domain': {
+                alias: 'domain',
+                string: true,
+                type: 'string',
+                describe: 'Auth0 domain for JWKs',
+                requiresArg: true
+            },
+            'auth0-clientid': {
+                alias: 'clientid',
+                string: true,
+                type: 'string',
+                describe: 'Audience for jwt verification',
+                requiresArg: true
+            },
+            'auth0-publickey': {
+                alias: 'publickey',
+                string: true,
+                type: 'string',
+                describe: 'Public key for jwt verification',
+                requiresArg: true
+            },
+            'webpack-config': {
+                alias: 'webpack',
+                string: true,
+                type: 'string',
+                default: './webpack.config.js',
+                describe: 'path to lambda script',
+                requiresArg: true,
+                required: true,
+            },
+            'schema': {
+                alias: 's',
+                string: true,
+                type: 'string',
+                default: './src/schema.graphql',
+                describe: 'path to graphql schema',
+                requiresArg: true
+            },
         })
         .config()
         .help()
