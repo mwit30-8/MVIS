@@ -136,8 +136,6 @@ jobs:
     defaults:
       run:
         working-directory: ./frontend
-    environment:
-      name: build-frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -154,7 +152,11 @@ jobs:
         run: yarn install
         working-directory: ./backend
       - name: Get DGraph Cloud information
-        run: yarn ts-node ./deploy --info
+        run: |
+          yarn ts-node ./deploy 
+            --cerebro-token ${{ secrets.CEREBRO_JWT }} \
+            --deployment-name ${{ secrets.DEPLOYMENT_NAME }} \
+            --info
         id: dgraph
         working-directory: ./backend
       - name: Restore cache
