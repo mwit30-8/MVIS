@@ -92,6 +92,14 @@ This project is part of the course in Mahidol Wittayanusorn School.
       yarn deploy # deploy to DGraph Cloud
       ```
 
+      If you want to watches over changes in `/backend/src`, run the following command instead.
+
+      ```sh
+      yarn build:watch
+      ```
+
+      The same goes for `yarn deploy:watch` but it is not recommended.
+
 4. Run frontend application
 
    1. Change directory to `/frontend`
@@ -130,13 +138,13 @@ This project is part of the course in Mahidol Wittayanusorn School.
       yarn start
       ```
 
-      If you want to deploy production web locally, run the following command.
+      If you want to deploy locally, run the following command.
 
       ```sh
       yarn local
       ```
 
-      If you want to run storybook to test each component,
+      If you want to run with storybook,
       run the following 2 commands concurrently.
 
       1. Run storybook server (Optional).
@@ -147,6 +155,13 @@ This project is part of the course in Mahidol Wittayanusorn School.
          ```sh
          yarn start:storybook
          ```
+
+      It is recommended for you to run and test in local environment.
+
+      The followings are the recommended tools to test and evaluate the software.
+
+      - [Lighthouse](https://developer.chrome.com/docs/lighthouse/) (local web deployment is recommended for best performance)
+      - [Storybook](https://storybook.js.org/) (requires run with storybook)
 
 ## Contributing
 
