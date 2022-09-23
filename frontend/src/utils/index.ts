@@ -1,6 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { Buffer } from "buffer";
+import fetch from "cross-fetch";
 import * as graphql from "../../generated/graphql";
 import schema from "../../generated/introspection";
 import * as config from "./config";
@@ -8,6 +9,7 @@ import * as config from "./config";
 export const createBackendClient = (token?: string) => {
   const httpLink = new HttpLink({
     uri: config.BACKEND_URL,
+    fetch,
   });
   const authLink = setContext((_, { headers: headers_ }) => {
     const headers = { ...headers_ };

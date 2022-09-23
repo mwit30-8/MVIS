@@ -12,7 +12,7 @@ module.exports = async function (env: Environment, argv: Arguments) {
   const isEnvProduction = process.env.NODE_ENV === "production";
   const config = await createExpoWebpackConfigAsync(env, argv);
   // Customize the config before returning it.
-  if (!config.plugins) config.plugins = [];
+  config.plugins = config.plugins ?? [];
   config.plugins.push(
     new webpack.DefinePlugin({
       "process.env.SERVED_PATH": JSON.stringify(env.locations.servedPath),
@@ -39,6 +39,6 @@ module.exports = async function (env: Environment, argv: Arguments) {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       })
     );
-  if (!config.module) config.module = { rules: [] };
+  config.module = config.module ?? { rules: [] };
   return config;
 };

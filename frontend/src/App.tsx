@@ -9,7 +9,6 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import AuthContextProvider, {
   AuthContext,
 } from "./components/Authenticate/context";
-import { InitialProps } from "expo/build/launch/withExpoRoot.types";
 import { ApolloProvider } from "@apollo/client";
 import { createBackendClient } from "./utils";
 
@@ -89,7 +88,7 @@ const App_: React.FC = () => {
   );
 };
 
-const App: React.FC<InitialProps> = () => {
+const App: React.FC = () => {
   return (
     <React.StrictMode>
       <AuthContextProvider>
