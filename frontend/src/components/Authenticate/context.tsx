@@ -1,6 +1,7 @@
 import * as React from "react";
 import { verifyJwt } from "../../utils";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 // An enum with all the types of actions to use in our reducer
 enum AuthActionEnum {
@@ -58,14 +59,15 @@ const Provider: React.FC<React.PropsWithChildren> = (props) => {
             isLoading: false,
           };
         case AuthActionEnum.SIGN_IN:
-          SecureStore.setItemAsync("idToken", action.token);
+          if (Platform.OS !== "web")
+            SecureStore.setItemAsync("idToken", action.token);
           return {
             ...prevState,
             isSignout: false,
             idToken: action.token,
           };
         case AuthActionEnum.SIGN_OUT:
-          SecureStore.deleteItemAsync("idToken");
+          if (Platform.OS !== "web") SecureStore.deleteItemAsync("idToken");
           return {
             ...prevState,
             isSignout: true,
@@ -82,6 +84,7 @@ const Provider: React.FC<React.PropsWithChildren> = (props) => {
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
+      if (Platform.OS === "web") return;
       try {
         const idToken: string | null = await SecureStore.getItemAsync(
           "idToken"
