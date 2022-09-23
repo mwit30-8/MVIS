@@ -78,13 +78,13 @@ jobs:
           BACKEND_URL: ${{ steps.dgraph.outputs.url }}
         run: yarn codegen
         working-directory: ./frontend
-        # Todo: Run tests on frontend
-      - name: Build GitHub Pages
+      - name: Export for local testing
         env:
           NODE_ENV: production
           BACKEND_URL: ${{ steps.dgraph.outputs.url }}
-        run: npx expo export:web
+        run: yarn local:export
         working-directory: ./frontend
+        # Todo: Run tests on frontend
 
       - name: Stop local DGraph
         if: always()
@@ -184,7 +184,7 @@ jobs:
           BACKEND_API_KEY: ${{ secrets.BACKEND_API_KEY }}
           AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
           AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-        run: npx expo export:web
+        run: yarn web:export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

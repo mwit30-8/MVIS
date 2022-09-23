@@ -130,7 +130,13 @@ This project is part of the course in Mahidol Wittayanusorn School.
       yarn start
       ```
 
-      If you want to run [storybook](https://storybook.js.org/) to test each component,
+      If you want to deploy production web locally, run the following command.
+
+      ```sh
+      yarn local
+      ```
+
+      If you want to run storybook to test each component,
       run the following 2 commands concurrently.
 
       1. Run storybook server (Optional).
