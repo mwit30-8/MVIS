@@ -40,7 +40,7 @@ export default {
       AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
       AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
       BACKEND_API_KEY: process.env.BACKEND_API_KEY,
-      RUN_STORYBOOK: process.env.__RUN__ === "storybook",
+      LOAD_STORYBOOK: process.env.LOAD_STORYBOOK === "true",
     },
   },
 };

@@ -11,6 +11,7 @@ import AuthContextProvider, {
 } from "./components/Authenticate/context";
 import { ApolloProvider } from "@apollo/client";
 import { createBackendClient } from "./utils";
+import Constant from "expo-constants";
 
 export type IRouteParamRoot = {
   Login: undefined;
@@ -59,41 +60,71 @@ const Main: React.FC<NativeStackScreenProps<IRouteParamRoot, "Main">> = () => {
     </MainNavigator.Navigator>
   );
 };
-const App_: React.FC = () => {
+const PreLogin: React.FC = () => {
   const { state } = React.useContext(AuthContext);
   return (
     <ApolloProvider client={createBackendClient(state.idToken)}>
-      <NavigationContainer>
-        <RootNavigator.Navigator
-          initialRouteName={state.isSignout ? "Login" : "Main"}
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {state.isSignout ? (
-            <RootNavigator.Group>
-              <RootNavigator.Screen
-                name="Login"
-                getComponent={() => require("./screens/Login").default}
-              />
-            </RootNavigator.Group>
-          ) : (
-            <RootNavigator.Group>
-              <RootNavigator.Screen name="Main" component={Main} />
-            </RootNavigator.Group>
-          )}
-        </RootNavigator.Navigator>
-      </NavigationContainer>
+      <RootNavigator.Navigator
+        initialRouteName={state.isSignout ? "Login" : "Main"}
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {state.isSignout ? (
+          <RootNavigator.Group>
+            <RootNavigator.Screen
+              name="Login"
+              getComponent={() => require("./screens/Login").default}
+            />
+          </RootNavigator.Group>
+        ) : (
+          <RootNavigator.Group>
+            <RootNavigator.Screen name="Main" component={Main} />
+          </RootNavigator.Group>
+        )}
+      </RootNavigator.Navigator>
     </ApolloProvider>
   );
 };
+const _App: React.FC = () => {
+  return (
+    <AuthContextProvider>
+      <PreLogin />
+    </AuthContextProvider>
+  );
+};
+
+const withStorybook =
+  (App: React.FC): React.FC =>
+  () => {
+    const Navigator = createBottomTabNavigator();
+    return (
+      <Navigator.Navigator
+        initialRouteName="Storybook"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Navigator.Screen name="App" component={App} />
+        <Navigator.Screen
+          name="Storybook"
+          getComponent={() =>
+            (require("../storybook") as typeof import("../storybook")).default
+          }
+        />
+      </Navigator.Navigator>
+    );
+  };
 
 const App: React.FC = () => {
+  const Content = Constant.manifest?.extra?.LOAD_STORYBOOK
+    ? withStorybook(_App)
+    : _App;
   return (
     <React.StrictMode>
-      <AuthContextProvider>
-        <App_ />
-      </AuthContextProvider>
+      <NavigationContainer>
+        <Content />
+      </NavigationContainer>
     </React.StrictMode>
   );
 };

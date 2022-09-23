@@ -18,14 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Welcome: React.FC<{ showApp?: () => void }> = (props) => {
-  // const showApp = (event: any) => {
-  //   const { showApp } = props;
-  //   event.preventDefault();
-
-  //   showApp?.();
-  // };
-
+const Welcome: React.FC = () => {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.header}>Welcome to React Native Storybook</Text>
@@ -38,10 +31,6 @@ const Welcome: React.FC<{ showApp?: () => void }> = (props) => {
       </Text>
     </View>
   );
-};
-
-Welcome.defaultProps = {
-  showApp: undefined,
 };
 
 export default Welcome;

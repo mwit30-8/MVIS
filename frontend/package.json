@@ -16,7 +16,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "cross-env WEB_PUBLIC_URL='/' expo start",
-    "start:storybook": "cross-env __RUN__='storybook' expo start",
+    "start:storybook": "cross-env WEB_PUBLIC_URL='/' LOAD_STORYBOOK=true expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "cross-env WEB_PUBLIC_URL='/' expo start --web",
@@ -25,8 +25,10 @@
     "local:export": "cross-env WEB_PUBLIC_URL='/' expo export:web",
     "local:serve": "serve web-build -p 3000",
     "codegen": "graphql-codegen --config codegen.ts",
+    "format": "prettier --write .",
+    "prestorybook": "rnstl",
     "storybook": "start-storybook -p 7007",
-    "format": "prettier --write ."
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -102,5 +104,14 @@
     "workbox-strategies": "^6.1.5",
     "workbox-streams": "^6.1.5",
     "workbox-webpack-plugin": "^6.5.4"
+  },
+  "config": {
+    "react-native-storybook-loader": {
+      "searchDir": [
+        "./src"
+      ],
+      "pattern": "**/*.stories.tsx",
+      "outputFile": "./storybook/storyLoader.ts"
+    }
   }
 }
