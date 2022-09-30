@@ -31,7 +31,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.7.0",
     "@expo-google-fonts/ubuntu": "^0.2.2",
     "@expo/html-elements": "^0.2.0",
     "@expo/vector-icons": "^13.0.0",
