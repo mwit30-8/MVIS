@@ -31,7 +31,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.6.10",
     "@expo-google-fonts/ubuntu": "^0.2.2",
     "@expo/html-elements": "^0.2.0",
     "@expo/vector-icons": "^13.0.0",
@@ -90,7 +90,7 @@
     "prettier": "^2.7.1",
     "serve": "^14.0.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.3",
+    "typescript": "^4.8.4",
     "workbox-background-sync": "^6.1.5",
     "workbox-broadcast-update": "^6.1.5",
     "workbox-cacheable-response": "^6.1.5",
