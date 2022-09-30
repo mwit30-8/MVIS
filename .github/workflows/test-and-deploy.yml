@@ -3,7 +3,8 @@ name: Build, Test, and Deploy
 on:
   push:
     branches:
-      - "*"
+      - main
+
   pull_request:
 
   workflow_dispatch:
@@ -123,7 +124,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Deploy to Dgraph Cloud
-        if:
         id: dgraph
         run: |
           sudo yarn ts-node ./deploy cloud \
@@ -135,6 +135,7 @@ jobs:
 
   build-frontend:
     runs-on: ubuntu-latest
+    # Assumed that if backend is changed, the frontend will automatically be changed too.
     if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.frontend == 'true'}}
     needs: ["tested"]
     defaults:
