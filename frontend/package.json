@@ -63,7 +63,7 @@
     "react-native-web": "~0.18.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.3",
+    "@babel/core": "^7.20.7",
     "@expo/webpack-config": "^0.17.2",
     "@graphql-codegen/cli": "2.13.7",
     "@graphql-codegen/fragment-matcher": "3.3.1",
