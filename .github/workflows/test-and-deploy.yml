@@ -177,7 +177,7 @@ jobs:
           BACKEND_URL: ${{ steps.dgraph.outputs.url }}
         run: yarn codegen
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
       - name: Build GitHub Pages
         env:
           NODE_ENV: production
